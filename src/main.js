@@ -22,20 +22,26 @@ import store from './store'
 import router from './router/routers'
 
 import './assets/icons' // icon
-import './router/index' // permission control
+import './router/index'
+import i18n from '@/lang'
+import Lang from '@/components/Lang' // permission control
 
 Vue.use(checkPer)
 Vue.use(permission)
 Vue.use(dict)
 Vue.use(Element, {
-  size: Cookies.get('size') || 'small' // set element-ui default size
+  size: Cookies.get('size') || 'small', // set element-ui default size
+  i18n: (key, value) => i18n.t(key, value)
 })
 
 Vue.config.productionTip = false
+
+Vue.component('Lang', Lang)
 
 new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   render: h => h(App)
 })

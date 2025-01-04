@@ -20,6 +20,10 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
 
+        <el-tooltip content="语言包" effect="dark" placement="bottom">
+          <Lang class="right-menu-item hover-effect" />
+        </el-tooltip>
+
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">

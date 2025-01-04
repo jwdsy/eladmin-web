@@ -1,5 +1,9 @@
 module.exports = {
   /**
+   * @description 系统名称
+   */
+  systemName: 'ELADMIN',
+  /**
    * @description 网站标题
    */
   title: 'ELADMIN',
