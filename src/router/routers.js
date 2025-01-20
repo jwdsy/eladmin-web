@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../layout/index'
+import Shopping from '@/views/shopping/index.vue'
 
 Vue.use(Router)
 
@@ -57,6 +58,10 @@ export const constantRouterMap = [
         meta: { title: '个人中心' }
       }
     ]
+  },
+  {
+    path: '/shopping/index',
+    component: Shopping
   }
 ]
 

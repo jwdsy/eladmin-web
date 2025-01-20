@@ -2,6 +2,7 @@
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
 const CompressionPlugin = require('compression-webpack-plugin')
+const webpack = require('webpack')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -60,6 +61,13 @@ module.exports = {
         filename: '[path].gz[query]', // 压缩后的文件名
         algorithm: 'gzip', // 使用gzip压缩
         minRatio: 0.8 // 压缩率小于1才会压缩
+      }),
+      // 配置 jQuery 插件的参数
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery',
+        'window.jQuery': 'jquery',
+        Popper: ['popper.js', 'default']
       })
     ]
   },

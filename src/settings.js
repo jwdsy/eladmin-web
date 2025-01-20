@@ -1,12 +1,8 @@
 module.exports = {
   /**
-   * @description 系统名称
-   */
-  systemName: 'ELADMIN',
-  /**
    * @description 网站标题
    */
-  title: 'ELADMIN',
+  title: 'Simple Home',
   /**
    * @description 是否显示 tagsView
    */
