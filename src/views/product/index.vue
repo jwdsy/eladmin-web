@@ -57,12 +57,12 @@ import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
 import udOperation from '@crud/UD.operation'
 export default {
-  name: 'Job',
+  name: 'Product',
   components: { eHeader, eForm, crudOperation, pagination, udOperation },
   cruds() {
     return CRUD({
-      title: '岗位',
-      url: 'api/job',
+      title: '产品',
+      url: 'item/detail/v1/getItemDetailList',
       sort: ['jobSort,asc', 'id,desc'],
       crudMethod: { ...crudJob }
     })
