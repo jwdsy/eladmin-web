@@ -122,7 +122,7 @@
     <!-- Product -->
     <div class="bg0 m-t-23 p-b-140">
       <div class="container">
-        <div class="flex-w flex-sb-m p-b-52">
+        <div class="flex-w flex-sb-m p-b-52" style="flex-direction: column;">
           <div class="flex-w flex-l-m filter-tope-group m-tb-10">
             <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
               All Products
@@ -149,23 +149,36 @@
             </button>
           </div>
 
-          <div class="flex-w flex-c-m m-tb-10">
-            <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
-              <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search" />
-              <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none" />
-              Search
-            </div>
-          </div>
+          <div class="flex-w flex-l-m filter-tope-group m-tb-10">
 
-          <!-- Search product -->
-          <div class="dis-none panel-search w-full p-t-10 p-b-15">
-            <div class="bor8 dis-flex p-l-15">
-              <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
-                <i class="zmdi zmdi-search" />
-              </button>
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter=".women1">
+              Women1
+            </button>
 
-              <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Please enter the product name">
-            </div>
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women2">
+              Women2
+            </button>
+
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
+              Women3
+            </button>
+
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
+              Women3
+            </button>
+
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
+              Women3
+            </button>
+
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
+              Women3
+            </button>
+
+            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
+              Women3
+            </button>
+
           </div>
 
         </div>
@@ -189,9 +202,17 @@
                   </a>
 
                   <span class="stext-105 cl3">
-                    $16.64
+                    Size(cm): L:100 * W:150 * H:50
                   </span>
                 </div>
+
+                <div class="block2-txt-child2 flex-r p-t-3">
+                  <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                    <img class="icon-heart1 dis-block trans-04" :src="heart01" alt="ICON">
+                    <img class="icon-heart2 dis-block trans-04 ab-t-l" :src="heart02" alt="ICON">
+                  </a>
+                </div>
+
               </div>
             </div>
           </div>
@@ -440,6 +461,7 @@ import pd02 from '@/assets/images/product-detail-02.jpg'
 import pd03 from '@/assets/images/product-detail-03.jpg'
 import close from '@/assets/images/icons/icon-close.png'
 import PerfectScrollbar from 'perfect-scrollbar'
+import shoppingApi from '@/api/shopping'
 
 export default {
   data() {
@@ -468,6 +490,8 @@ export default {
   mounted() {
     this.backToTop()
 
+    this.queryProduct()
+
     this.initIsotope()
 
     this.searchProduct()
@@ -475,8 +499,17 @@ export default {
     this.showHideCart()
 
     this.quickView()
+
+    this.addToCart()
   },
   methods: {
+
+    queryProduct() {
+      shoppingApi.queryProduct().then(res => {
+        console.log(res)
+      })
+    },
+
     /* [ 初始化Isotope ]
     ===========================================================*/
     async initIsotope() {
@@ -636,6 +669,19 @@ export default {
             enabled: true
           },
           mainClass: 'mfp-fade'
+        })
+      })
+    },
+
+    addToCart() {
+      $('.js-addwish-b2').each(function() {
+        var nameProduct = $(this).parent().parent().find('.js-name-b2').html()
+        $(this).on('click', function() {
+          // swal(nameProduct, 'is added to wishlist !', 'success')
+          alert(nameProduct)
+
+          $(this).addClass('js-addedwish-b2')
+          $(this).off('click')
         })
       })
     }

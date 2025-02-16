@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
-export function getAllJob() {
+export function queryProduct() {
   const params = {
-    page: 0,
-    size: 9999,
+    pageNo: 1,
+    pageSize: 10,
     enabled: true
   }
   return request({
-    url: 'api/biz/item',
+    url: '/api/item/list',
     method: 'get',
     params
   })
@@ -15,7 +15,7 @@ export function getAllJob() {
 
 export function add(data) {
   return request({
-    url: 'api/biz/item',
+    url: 'api/product',
     method: 'post',
     data
   })
@@ -23,7 +23,7 @@ export function add(data) {
 
 export function del(ids) {
   return request({
-    url: 'api/biz/item',
+    url: 'api/product',
     method: 'delete',
     data: ids
   })
@@ -31,10 +31,10 @@ export function del(ids) {
 
 export function edit(data) {
   return request({
-    url: 'api/biz/item',
+    url: 'api/product',
     method: 'put',
     data
   })
 }
 
-export default { add, edit, del }
+export default { queryProduct, add, edit, del }

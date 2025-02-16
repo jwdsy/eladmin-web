@@ -51,8 +51,8 @@ export default {
   cruds() {
     return CRUD({
       title: '产品',
-      url: 'api/product',
-      sort: ['jobSort,asc', 'id,desc'],
+      url: 'api/biz/item',
+      sort: ['itemNo,desc'],
       crudMethod: { ...crudJob }
     })
   },
