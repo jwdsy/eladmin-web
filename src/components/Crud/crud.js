@@ -55,7 +55,9 @@ function CRUD(options) {
     // 在主页准备
     queryOnPresenterCreated: true,
     // 调试开关
-    debug: false
+    debug: false,
+    // 初始的list方法
+    initData
   }
   options = mergeOptions(defaultOptions, options)
   const data = {
@@ -131,7 +133,8 @@ function CRUD(options) {
       return new Promise((resolve, reject) => {
         crud.loading = true
         // 请求数据
-        initData(crud.url, crud.getQueryParams()).then(data => {
+        this.initData(crud.url, crud.getQueryParams()).then(data => {
+          console.log(this.getQueryParams(), 7777)
           const table = crud.getTable()
           if (table && table.lazy) { // 懒加载子节点数据，清掉已加载的数据
             table.store.states.treeData = {}
@@ -348,11 +351,13 @@ function CRUD(options) {
         if (crud.params[item] === null || crud.params[item] === '') crud.params[item] = undefined
       })
       return {
+
         page: crud.page.page - 1,
         size: crud.page.size,
         sort: crud.sort,
         ...crud.query,
         ...crud.params
+
       }
     },
     // 当前页改变
