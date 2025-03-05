@@ -16,7 +16,7 @@
 
             <!-- Icon header -->
             <div class="wrap-icon-header flex-w flex-r-m">
-              <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="3">
+              <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" :data-notify="`${pickProducts.length}`" @click="showCart">
                 <i class="zmdi zmdi-shopping-cart" />
               </div>
             </div>
@@ -33,7 +33,7 @@
 
         <!-- Icon header -->
         <div class="wrap-icon-header flex-w flex-r-m m-r-15">
-          <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="23">
+          <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" :data-notify="`${pickProducts.length}`" @click="showCart">
             <i class="zmdi zmdi-shopping-cart" />
           </div>
         </div>
@@ -44,7 +44,7 @@
 
     <!-- Cart -->
     <div class="wrap-header-cart js-panel-cart">
-      <div class="s-full js-hide-cart" />
+      <div class="s-full js-hide-cart" @click="hideCart" />
 
       <div class="header-cart flex-col-l p-l-65 p-r-25">
         <div class="header-cart-title flex-w flex-sb-m p-b-8">
@@ -52,57 +52,25 @@
             Your Cart
           </span>
 
-          <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+          <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart" @click="hideCart">
             <i class="zmdi zmdi-close" />
           </div>
         </div>
 
         <div class="header-cart-content flex-w js-pscroll">
           <ul class="header-cart-wrapitem w-full">
-            <li class="header-cart-item flex-w flex-t m-b-12">
+            <li v-for="(product, index) in pickProducts" :key="index" class="header-cart-item flex-w flex-t m-b-12">
               <div class="header-cart-item-img">
-                <img :src="pd01" alt="IMG">
+                <img :src="`${product.itemPic}`" alt="IMG">
               </div>
 
               <div class="header-cart-item-txt p-t-8">
                 <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                  White Shirt Pleat
+                  {{ product.itemNo }}
                 </a>
 
                 <span class="header-cart-item-info">
-                  1 x $19.00
-                </span>
-              </div>
-            </li>
-
-            <li class="header-cart-item flex-w flex-t m-b-12">
-              <div class="header-cart-item-img">
-                <img :src="pd02" alt="IMG">
-              </div>
-
-              <div class="header-cart-item-txt p-t-8">
-                <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                  Converse All Star
-                </a>
-
-                <span class="header-cart-item-info">
-                  1 x $39.00
-                </span>
-              </div>
-            </li>
-
-            <li class="header-cart-item flex-w flex-t m-b-12">
-              <div class="header-cart-item-img">
-                <img :src="pd03" alt="IMG">
-              </div>
-
-              <div class="header-cart-item-txt p-t-8">
-                <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                  Nixon Porter Leather
-                </a>
-
-                <span class="header-cart-item-info">
-                  1 x $17.00
+                  L:{{ product.itemLength }} * W:{{ product.itemWidth }} * H:{{ product.itemHeight }}
                 </span>
               </div>
             </li>
@@ -110,8 +78,11 @@
 
           <div class="w-full">
             <div class="header-cart-buttons flex-w w-full">
-              <div class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+              <div class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10 pointer" @click="submitCart">
                 Submit
+              </div>
+              <div class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10 pointer" @click="cleanCart">
+                Clean
               </div>
             </div>
           </div>
@@ -122,108 +93,7 @@
     <!-- Product -->
     <div class="bg0 m-t-23 p-b-140">
       <div class="container">
-        <div class="flex-w flex-sb-m p-b-52" style="flex-direction: column;">
-          <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-              All Products
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-              Women
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-              Men
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
-              Bag
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
-              Shoes
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-              Watches
-            </button>
-          </div>
-
-          <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter=".women1">
-              Women1
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women2">
-              Women2
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
-              Women3
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
-              Women3
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
-              Women3
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
-              Women3
-            </button>
-
-            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women3">
-              Women3
-            </button>
-
-          </div>
-
-        </div>
-
-        <div class="row isotope-grid">
-          <div v-for="(image, index) in images" :key="index" class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-            <!-- Block2 -->
-            <div class="block2">
-              <div class="block2-pic hov-img0">
-                <img :src="image" :alt="'IMG-PRODUCT'+index">
-
-                <a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-                  Quick View
-                </a>
-              </div>
-
-              <div class="block2-txt flex-w flex-t p-t-14">
-                <div class="block2-txt-child1 flex-col-l ">
-                  <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-                    Esprit Ruffle Shirt
-                  </a>
-
-                  <span class="stext-105 cl3">
-                    Size(cm): L:100 * W:150 * H:50
-                  </span>
-                </div>
-
-                <div class="block2-txt-child2 flex-r p-t-3">
-                  <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-                    <img class="icon-heart1 dis-block trans-04" :src="heart01" alt="ICON">
-                    <img class="icon-heart2 dis-block trans-04 ab-t-l" :src="heart02" alt="ICON">
-                  </a>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Load more -->
-        <div class="flex-c-m flex-w w-full p-t-45">
-          <a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-            Load More
-          </a>
-        </div>
+        <IsotopeGrid />
       </div>
     </div>
 
@@ -349,99 +219,6 @@
       </span>
     </div>
 
-    <!-- Modal1 -->
-    <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
-      <div class="overlay-modal1 js-hide-modal1" />
-
-      <div class="container">
-        <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
-          <button class="how-pos3 hov3 trans-04 js-hide-modal1">
-            <img :src="close" alt="CLOSE">
-          </button>
-
-          <div class="row">
-            <div class="col-md-6 col-lg-7 p-b-30">
-              <div class="p-l-25 p-r-30 p-lr-0-lg">
-                <div class="wrap-slick3 flex-sb flex-w">
-                  <div class="wrap-slick3-dots" />
-                  <div class="wrap-slick3-arrows flex-sb-m flex-w" />
-
-                  <div class="slick3 gallery-lb">
-                    <div class="item-slick3">
-                      <div class="wrap-pic-w pos-relative">
-                        <img :src="pd01" alt="IMG-PRODUCT">
-
-                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" :href="pd01">
-                          <i class="fa fa-expand" />
-                        </a>
-                      </div>
-                    </div>
-
-                    <div class="item-slick3">
-                      <div class="wrap-pic-w pos-relative">
-                        <img :src="pd02" alt="IMG-PRODUCT">
-
-                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" :href="pd02">
-                          <i class="fa fa-expand" />
-                        </a>
-                      </div>
-                    </div>
-
-                    <div class="item-slick3">
-                      <div class="wrap-pic-w pos-relative">
-                        <img :src="pd03" alt="IMG-PRODUCT">
-
-                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" :href="pd03">
-                          <i class="fa fa-expand" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-lg-5 p-b-30">
-              <div class="p-r-50 p-t-5 p-lr-0-lg">
-                <h4 class="mtext-105 cl2 js-name-detail p-b-14">
-                  Lightweight Jacket
-                </h4>
-
-                <span class="mtext-106 cl2">
-                  $58.79
-                </span>
-
-                <p class="stext-102 cl3 p-t-23">
-                  Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.
-                </p>
-
-                <!--  -->
-                <div class="p-t-33">
-                  <div class="flex-w flex-r-m p-b-10">
-                    <div class="panel-search w-full p-t-10 p-b-15">
-                      <div class="bor8 dis-flex p-l-15">
-                        <textarea class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Please describe your requirements for this product" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="flex-w flex-r-m p-b-10">
-                    <div class="size-204 flex-w flex-m respon6-next">
-
-                      <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-                        Add to cart
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </body>
 </template>
 
@@ -452,107 +229,36 @@ import 'select2'
 import 'animsition'
 import 'magnific-popup'
 import 'slick-carousel'
-import Isotope from 'isotope-layout'
 import logo from '@/assets/images/icons/logo.png'
 import heart01 from '@/assets/images/icons/icon-heart-01.png'
 import heart02 from '@/assets/images/icons/icon-heart-02.png'
-import pd01 from '@/assets/images/product-detail-01.jpg'
-import pd02 from '@/assets/images/product-detail-02.jpg'
-import pd03 from '@/assets/images/product-detail-03.jpg'
 import close from '@/assets/images/icons/icon-close.png'
 import PerfectScrollbar from 'perfect-scrollbar'
 import shoppingApi from '@/api/shopping'
+import IsotopeGrid from '@/components/IsotopeGrid/IsotopeGrid.vue'
+import Swal from 'sweetalert2'
 
 export default {
+  components: {
+    IsotopeGrid
+  },
   data() {
     return {
       logo: logo,
       heart01: heart01,
       heart02: heart02,
-      pd01: pd01,
-      pd02: pd02,
-      pd03: pd03,
       close: close,
-      images: [
-        'http://8.130.87.100:8009/images/product-01.jpg', 'http://8.130.87.100:8009/images/product-02.jpg', 'http://8.130.87.100:8009/images/product-03.jpg', 'http://8.130.87.100:8009/images/product-04.jpg',
-        'http://8.130.87.100:8009/images/product-05.jpg', 'http://8.130.87.100:8009/images/product-06.jpg', 'http://8.130.87.100:8009/images/product-07.jpg', 'http://8.130.87.100:8009/images/product-08.jpg',
-        'http://8.130.87.100:8009/images/product-09.jpg', 'http://8.130.87.100:8009/images/product-10.jpg', 'http://8.130.87.100:8009/images/product-11.jpg', 'http://8.130.87.100:8009/images/product-12.jpg',
-        'http://8.130.87.100:8009/images/product-13.jpg', 'http://8.130.87.100:8009/images/product-14.jpg', 'http://8.130.87.100:8009/images/product-15.jpg', 'http://8.130.87.100:8009/images/product-16.jpg'
-      ],
-      items: [
-        // 数据示例
-        { id: 1, category: 'red', content: 'Item 1' },
-        { id: 2, category: 'blue', content: 'Item 2' }
-      ]
+      labels: [],
+      pickProducts: []
     }
   },
   // JS逻辑
   mounted() {
+    this.queryPickProduct()
+
     this.backToTop()
-
-    this.queryProduct()
-
-    this.initIsotope()
-
-    this.searchProduct()
-
-    this.showHideCart()
-
-    this.quickView()
-
-    this.addToCart()
   },
   methods: {
-
-    queryProduct() {
-      shoppingApi.queryProduct().then(res => {
-        console.log(res)
-      })
-    },
-
-    /* [ 初始化Isotope ]
-    ===========================================================*/
-    async initIsotope() {
-      // 1.获取 isotope 导航条
-      const navbar = await document.querySelector('.filter-tope-group')
-
-      const isotope = await new Isotope('.isotope-grid', {
-        itemSelector: '.isotope-item',
-        layoutMode: 'fitRows',
-        percentPosition: true,
-        animationEngine: 'best-available',
-        masonry: {
-          columnWidth: '.isotope-item'
-        }
-      })
-
-      // 3.为导航条注册点击事件
-      navbar.addEventListener('click', (e) => {
-        const { target } = e
-        const filterOption = target.getAttribute('data-filter') // 筛选的类别
-        if (filterOption) {
-          // 给元素移除 actived 样式
-          navbar.querySelectorAll('span')
-            .forEach(
-              (btn) => btn.classList.remove('actived')
-            )
-          // 给目标元素加上 actived 样式
-          target.classList.add('actived')
-          // 筛选
-          isotope.arrange({ filter: filterOption })
-        }
-      })
-
-      const isotopeButton = $('.filter-tope-group button')
-      $(isotopeButton).each(function() {
-        $(this).on('click', function() {
-          for (let i = 0; i < isotopeButton.length; i++) {
-            $(isotopeButton[i]).removeClass('how-active1')
-          }
-          $(this).addClass('how-active1')
-        })
-      })
-    },
     /* [ 返回顶部 ]
     ===========================================================*/
     backToTop() {
@@ -572,80 +278,14 @@ export default {
     },
 
     /* ==================================================================
-      [ Filter / Search product ]*/
-    searchProduct() {
-      $('.js-show-filter').on('click', function() {
-        $(this).toggleClass('show-filter')
-        $('.panel-filter').slideToggle(400)
-
-        if ($('.js-show-search').hasClass('show-search')) {
-          $('.js-show-search').removeClass('show-search')
-          $('.panel-search').slideUp(400)
-        }
-      })
-
-      $('.js-show-search').on('click', function() {
-        $(this).toggleClass('show-search')
-        $('.panel-search').slideToggle(400)
-
-        if ($('.js-show-filter').hasClass('show-filter')) {
-          $('.js-show-filter').removeClass('show-filter')
-          $('.panel-filter').slideUp(400)
-        }
-      })
-    },
-
-    /* ==================================================================
       [ Cart ]*/
-    showHideCart() {
-      $('.js-show-cart').on('click', function() {
-        $('.js-panel-cart').addClass('show-header-cart')
-      })
-
-      $('.js-hide-cart').on('click', function() {
-        $('.js-panel-cart').removeClass('show-header-cart')
-      })
+    hideCart() {
+      $('.js-panel-cart').removeClass('show-header-cart')
     },
+    showCart() {
+      this.queryPickProduct()
 
-    /* ==================================================================
-     [ Quick View ]*/
-    quickView() {
-      /* ==================================================================
-      [ Show modal1 ]*/
-      $('.js-show-modal1').on('click', function(e) {
-        e.preventDefault()
-        $('.js-modal1').addClass('show-modal1')
-      })
-
-      $('.js-hide-modal1').on('click', function() {
-        $('.js-modal1').removeClass('show-modal1')
-      })
-
-      /* ==================================================================
-            [ Slick3 ]*/
-      $('.wrap-slick3').each(function() {
-        $(this).find('.slick3').slick({
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          fade: true,
-          infinite: true,
-          autoplay: false,
-          autoplaySpeed: 6000,
-
-          arrows: true,
-          appendArrows: $(this).find('.wrap-slick3-arrows'),
-          prevArrow: '<button class="arrow-slick3 prev-slick3"><i class="fa fa-angle-left" aria-hidden="true"></i></button>',
-          nextArrow: '<button class="arrow-slick3 next-slick3"><i class="fa fa-angle-right" aria-hidden="true"></i></button>',
-
-          dots: true,
-          appendDots: $(this).find('.wrap-slick3-dots'),
-          dotsClass: 'slick3-dots',
-          customPaging: function(slick, index) {
-            const portrait = $(slick.$slides[index]).find('img').attr('src')
-            return '<img src=" ' + portrait + ' " alt=""/><div class="slick3-dot-overlay"></div>'
-          }
-        })
-      })
+      $('.js-panel-cart').addClass('show-header-cart')
 
       $('.js-pscroll').each(function() {
         $(this).css('position', 'relative')
@@ -660,32 +300,36 @@ export default {
           ps.update()
         })
       })
-
-      $('.gallery-lb').each(function() { // the containers for all your galleries
-        $(this).magnificPopup({
-          delegate: 'a', // the selector for gallery item
-          type: 'image',
-          gallery: {
-            enabled: true
-          },
-          mainClass: 'mfp-fade'
+    },
+    queryPickProduct() {
+      shoppingApi.queryPicProduct().then(res => {
+        this.pickProducts = res.itemList
+      })
+    },
+    submitCart() {
+      $('.js-panel-cart').removeClass('show-header-cart')
+      shoppingApi.submitCart().then(res => {
+        Swal.fire({
+          text: 'The shopping cart has been submitted !',
+          icon: 'success',
+          timer: 300000, // 动态设置关闭时间
+          timerProgressBar: true, // 显示进度条
+          showConfirmButton: false // 隐藏确认按钮
         })
       })
     },
-
-    addToCart() {
-      $('.js-addwish-b2').each(function() {
-        var nameProduct = $(this).parent().parent().find('.js-name-b2').html()
-        $(this).on('click', function() {
-          // swal(nameProduct, 'is added to wishlist !', 'success')
-          alert(nameProduct)
-
-          $(this).addClass('js-addedwish-b2')
-          $(this).off('click')
+    cleanCart() {
+      $('.js-panel-cart').removeClass('show-header-cart')
+      shoppingApi.cleanCart().then(res => {
+        Swal.fire({
+          text: 'The shopping cart has been emptied !',
+          icon: 'success',
+          timer: 3000, // 动态设置关闭时间
+          timerProgressBar: true, // 显示进度条
+          showConfirmButton: false // 隐藏确认按钮
         })
       })
     }
-
   }
 }
 
@@ -703,9 +347,3 @@ require('perfect-scrollbar/css/perfect-scrollbar.css')
 require('@/assets/styles/base/util.css')
 require('@/assets/styles/base/main.css')
 </script>
-
-<style scoped>
-  *::placeholder {
-    color: rgb(128, 128, 128);
-  }
-</style>

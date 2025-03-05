@@ -1,15 +1,62 @@
 import request from '@/utils/request'
 
-export function queryProduct() {
+export function queryProduct(pageNo, pageSize, labelId) {
   const params = {
-    pageNo: 1,
-    pageSize: 10,
-    enabled: true
+    pageNo: pageNo,
+    pageSize: pageSize,
+    firstLabelId: labelId
   }
   return request({
     url: '/api/item/list',
     method: 'get',
     params
+  })
+}
+
+export function queryPicProduct() {
+  const params = {
+    pageNo: 1,
+    pageSize: 100,
+    pickFlag: 1
+  }
+  return request({
+    url: '/api/item/list',
+    method: 'get',
+    params
+  })
+}
+
+export function itemPick(itemId, itemRemark, pickFlag) {
+  const params = {
+    itemId: itemId,
+    itemRemark: itemRemark,
+    pickFlag: pickFlag
+  }
+  return request({
+    url: '/api/item/pick',
+    method: 'post',
+    params
+  })
+}
+
+export function submitCart() {
+  return request({
+    url: '/api/item/submit',
+    method: 'post'
+  })
+}
+
+export function cleanCart() {
+  return request({
+    url: '/api/item/clean',
+    method: 'post'
+  })
+}
+
+export function queryLabel() {
+  return request({
+    url: '/api/item/label/list',
+    method: 'get'
   })
 }
 
@@ -37,4 +84,4 @@ export function edit(data) {
   })
 }
 
-export default { queryProduct, add, edit, del }
+export default { queryProduct, queryLabel, queryPicProduct, itemPick, submitCart, cleanCart, add, edit, del }

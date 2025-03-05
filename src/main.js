@@ -22,9 +22,9 @@ import store from './store'
 import router from './router/routers'
 
 import './assets/icons' // icon
-import './router/index'
+import './router/index' // permission control
 import i18n from '@/lang'
-import Lang from '@/components/Lang' // permission control
+import Lang from '@/components/Lang'
 
 Vue.use(checkPer)
 Vue.use(permission)

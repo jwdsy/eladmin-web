@@ -6,7 +6,15 @@
       <crudOperation :permission="permission" />
     </div>
     <!--表格渲染-->
-    <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
+    <el-table
+      ref="table"
+      v-loading="crud.loading"
+      :data="crud.data"
+      style="width: 100%;"
+      @select="crud.selectChange"
+      @select-all="crud.selectAllChange"
+      @selection-change="crud.selectionChangeHandler"
+    >
       <el-table-column type="selection" width="55" />
       <el-table-column prop="itemNo" :label="this.$t('product.table.itermNo')" />
       <el-table-column prop="itemPic" :label="this.$t('product.table.picture')" align="center" width="250px">
@@ -51,7 +59,8 @@ export default {
   cruds() {
     return CRUD({
       title: '产品',
-      url: 'api/biz/item',
+      idField: 'itemId',
+      url: 'api/product',
       sort: ['itemNo,desc'],
       crudMethod: { ...crudJob }
     })
