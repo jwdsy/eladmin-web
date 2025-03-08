@@ -59,18 +59,22 @@
 
         <div class="header-cart-content flex-w js-pscroll">
           <ul class="header-cart-wrapitem w-full">
-            <li v-for="(product, index) in pickProducts" :key="index" class="header-cart-item flex-w flex-t m-b-12">
+            <li v-for="(product, index) in pickProducts" :key="index" class="header-cart-item flex-w flex-t m-b-20">
               <div class="header-cart-item-img">
                 <img :src="`${product.itemPic}`" alt="IMG">
               </div>
 
-              <div class="header-cart-item-txt p-t-8">
-                <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+              <div class="header-cart-item-txt">
+                <a href="#" class="header-cart-item-name hov-cl1 trans-04">
                   {{ product.itemNo }}
                 </a>
 
                 <span class="header-cart-item-info">
                   L:{{ product.itemLength }} * W:{{ product.itemWidth }} * H:{{ product.itemHeight }}
+                </span>
+
+                <span class="header-cart-item-info" style="inline-size: max-content; color: black;">
+                  {{ product.pickRemark }}
                 </span>
               </div>
             </li>
@@ -93,7 +97,7 @@
     <!-- Product -->
     <div class="bg0 m-t-23 p-b-140">
       <div class="container">
-        <IsotopeGrid />
+        <IsotopeGrid @handlePickProduct="handlePickProduct" />
       </div>
     </div>
 
@@ -259,6 +263,9 @@ export default {
     this.backToTop()
   },
   methods: {
+    handlePickProduct(pickProduct) {
+      this.pickProducts.push(pickProduct)
+    },
     /* [ 返回顶部 ]
     ===========================================================*/
     backToTop() {
@@ -312,7 +319,7 @@ export default {
         Swal.fire({
           text: 'The shopping cart has been submitted !',
           icon: 'success',
-          timer: 300000, // 动态设置关闭时间
+          timer: 3000, // 动态设置关闭时间
           timerProgressBar: true, // 显示进度条
           showConfirmButton: false // 隐藏确认按钮
         })

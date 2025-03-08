@@ -90,7 +90,7 @@
                   <div class="flex-w flex-r-m p-b-10">
                     <div class="panel-search w-full p-t-10 p-b-15">
                       <div class="bor8 dis-flex p-l-15">
-                        <textarea v-model="itemRemark" class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Please describe your requirements for this product" />
+                        <textarea v-model="viewProduct.pickRemark" class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Please describe your requirements for this product" />
                       </div>
                     </div>
                   </div>
@@ -144,7 +144,7 @@ export default {
       products: [],
       viewProduct: {},
       pageNo: 1,
-      pageSize: 4,
+      pageSize: 8,
       labelId: null,
       theEnd: false,
       loadMore: 'Load More',
@@ -230,9 +230,10 @@ export default {
       $('.js-modal1').addClass('show-modal1')
     },
     addToCart() {
-      shoppingApi.itemPick(this.viewProduct.itemId, this.itemRemark, 1).then(res => {
+      shoppingApi.itemPick(this.viewProduct.itemId, this.viewProduct.pickRemark, 1).then(res => {
         this.viewProduct.pickFlag = 1
         $('.js-modal1').removeClass('show-modal1')
+        this.$emit('handlePickProduct', { message: this.viewProduct })
         Swal.fire({
           text: '[' + this.viewProduct.itemNo + '] is added to cart !',
           icon: 'success',
