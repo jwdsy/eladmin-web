@@ -22,15 +22,14 @@
           <el-input v-model="form.labelName" style="width: 670px" placeholder="展示给用户的名称" />
         </el-form-item>
         <el-form-item label="标签等级" prop="labelLevel">
-          <el-select v-model="form.labelLevelName" clearable size="small" placeholder="标签等级" class="filter-item" style="width: 120px" @change="crud.toQuery">
+          <el-select v-model="form.labelLevelName" clearable size="small" placeholder="标签等级" class="filter-item" style="width: 120px">
             <el-option v-for="item in labelLevel4Edit" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
-        <el-form-item label="一级标签" prop="firstLabelName">
+        <el-form-item v-if="form.labelLevelName === '2'" label="一级标签" prop="firstLabelName">
           <el-select v-model="form.firstLabelName" clearable size="small" placeholder="标签等级" class="filter-item" style="width: 120px">
-            <el-option v-for="item in firstLabelList" :key="item.key" :label="item.display_name" :value="item.key" />
+            <el-option v-for="item in firstLabels" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
-          <!--          <el-input v-model="form.firstLabelName" placeholder="二级标签需要选择一级标签" />-->
         </el-form-item>
         <el-form-item label="标签描述" prop="description">
           <el-input v-model="form.description" style="width: 670px" placeholder="标签描述" />
@@ -120,8 +119,7 @@ export default {
         { key: '1', display_name: '一级' },
         { key: '2', display_name: '二级' }
       ],
-      firstLabelList: [
-      ],
+      firstLabels: [],
       labelStatus: [
         { key: '', display_name: '全部' },
         { key: '1', display_name: '上线' },
@@ -160,11 +158,21 @@ export default {
         data.enabled = !data.enabled
       })
     },
-    // 修改标签状态
-    getFirstLabelList() {
-      crudLabel.getFirstLabelList.then(data => {
-      }).catch(() => {
-
+    // 新增与编辑前做的操作
+    [CRUD.HOOK.afterToCU](crud, form) {
+      this.getFirstLabel()
+    },
+    // 获取一级标签
+    getFirstLabel() {
+      this.firstLabels = []
+      crudLabel.getFirstLabelList().then(res => {
+        const depts = res.labelList
+        depts.forEach(data => {
+          this.firstLabels.push({
+            key: data.labelId,
+            display_name: data.labelId + ' : ' + data.labelName
+          })
+        })
       })
     }
   }

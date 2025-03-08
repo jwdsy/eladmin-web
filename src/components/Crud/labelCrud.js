@@ -132,7 +132,6 @@ function CRUD(options) {
         crud.loading = true
         // 请求数据
         initData(crud.url, this.getQueryParams()).then(data => {
-          console.log(this.getQueryParams(), 7777)
           const table = crud.getTable()
           if (table && table.lazy) { // 懒加载子节点数据，清掉已加载的数据
             table.store.states.treeData = {}
