@@ -7,64 +7,27 @@
     :title="crud.status.title"
     width="500px"
   >
-    <el-form
-      ref="form"
-      :model="form"
-      :rules="rules"
-      size="small"
-      label-width="80px"
-    >
-      <el-form-item
-        label="名称"
-        prop="name"
-      >
-        <el-input
-          v-model="form.name"
-          style="width: 370px;"
-        />
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+      <el-form-item label="商品编号" prop="itemNo">
+        <el-input v-model="form.itemNo" style="width: 370px;" />
       </el-form-item>
-      <el-form-item
-        label="排序"
-        prop="jobSort"
-      >
-        <el-input-number
-          v-model.number="form.jobSort"
-          :min="0"
-          :max="999"
-          controls-position="right"
-          style="width: 370px;"
-        />
+      <el-form-item label="商品图片" prop="itemPic">
+        <div class="el-upload">
+          <img :src="form.itemPic" title="点击上传商品图片" style="height: 150px;" @click="toggleShow">
+          <myUpload v-model="show" :headers="headers" :url="imagesUploadApi" />
+        </div>
       </el-form-item>
-      <el-form-item
-        v-if="form.pid !== 0"
-        label="状态"
-        prop="enabled"
-      >
-        <el-radio
-          v-for="item in jobStatus"
-          :key="item.id"
-          v-model="form.enabled"
-          :label="item.value === 'true'"
-        >
+      <el-form-item v-if="form.pid !== 0" label="状态" prop="enabled">
+        <el-radio v-for="item in jobStatus" :key="item.id" v-model="form.enabled" :label="item.value === 'true'">
           {{ item.label }}
         </el-radio>
       </el-form-item>
     </el-form>
-    <div
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        type="text"
-        @click="crud.cancelCU"
-      >
+    <div slot="footer" class="dialog-footer">
+      <el-button type="text" @click="crud.cancelCU">
         取消
       </el-button>
-      <el-button
-        :loading="crud.status.cu === 2"
-        type="primary"
-        @click="crud.submitCU"
-      >
+      <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">
         确认
       </el-button>
     </div>
@@ -73,14 +36,18 @@
 
 <script>
 import { form } from '@crud/crud'
+import myUpload from 'vue-image-crop-upload'
+import { getToken } from '@/utils/auth'
+import { mapGetters } from 'vuex'
 
 const defaultForm = {
   id: null,
-  name: '',
-  jobSort: 999,
+  itemNo: '',
+  itemPic: '',
   enabled: true
 }
 export default {
+  components: { myUpload },
   mixins: [form(defaultForm)],
   props: {
     jobStatus: {
@@ -90,14 +57,28 @@ export default {
   },
   data() {
     return {
+      show: false,
+      headers: {
+        'Authorization': getToken()
+      },
       rules: {
-        name: [
+        itemNo: [
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         jobSort: [
           { required: true, message: '请输入序号', trigger: 'blur', type: 'number' }
         ]
       }
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'imagesUploadApi'
+    ])
+  },
+  methods: {
+    toggleShow() {
+      this.show = !this.show
     }
   }
 }
