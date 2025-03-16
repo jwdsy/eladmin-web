@@ -17,10 +17,29 @@ export function del(ids) {
 }
 
 export function edit(data) {
-  return request({
-    url: 'item/label/v1/createOrUpdateItemLabel',
-    method: 'post',
-    data
+  return new Promise(async(resolve, reject) => {
+    delete data.labelLevelName
+    delete data.firstLabelName
+    delete data.labelStatus
+    if (data.labelLevel === 1) {
+      delete data.firstLabelId
+    }
+    try {
+      const result = await request({
+        url: 'item/label/v1/createOrUpdateItemLabel',
+        method: 'post',
+        data
+      })
+      if (result) {
+        resolve({
+          ...result
+        })
+      } else {
+        reject(false)
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 

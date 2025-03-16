@@ -6,11 +6,12 @@
         <!-- 搜索 -->
         <el-input v-model="query.labelName" clearable size="small" placeholder="标签名称" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <el-select v-model="query.labelLevel" clearable size="small" placeholder="标签等级" class="filter-item" style="width: 120px" @change="crud.toQuery">
-          <el-option v-for="item in labelLevel" :key="item.key" :label="item.display_name" :value="item.key" />
+          <el-option v-for="item in labelLevelList" :key="item.key" :label="item.display_name" :value="item.key" />
         </el-select>
         <el-select v-model="query.labelStatus" clearable size="small" placeholder="标签状态" class="filter-item" style="width: 120px" @change="crud.toQuery">
           <el-option v-for="item in labelStatus" :key="item.key" :label="item.display_name" :value="item.key" />
         </el-select>
+        <el-input v-model="query.description" clearable size="small" placeholder="标签描述" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation />
       </div>
       <crudOperation :permission="permission" :opt-show="optShow" />
@@ -22,12 +23,12 @@
           <el-input v-model="form.labelName" style="width: 670px" placeholder="展示给用户的名称" />
         </el-form-item>
         <el-form-item label="标签等级" prop="labelLevel">
-          <el-select v-model="form.labelLevelName" clearable size="small" placeholder="标签等级" class="filter-item" style="width: 120px">
-            <el-option v-for="item in labelLevel4Edit" :key="item.key" :label="item.display_name" :value="item.key" />
+          <el-select v-model="form.labelLevel" clearable size="small" placeholder="标签等级" class="filter-item" style="width: 120px">
+            <el-option v-for="item in labelLevelList" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form.labelLevelName === '2'" label="一级标签" prop="firstLabelName">
-          <el-select v-model="form.firstLabelName" clearable size="small" placeholder="标签等级" class="filter-item" style="width: 120px">
+        <el-form-item v-if="form.labelLevel === 2" label="一级标签" prop="firstLabelName">
+          <el-select v-model="form.firstLabelId" clearable size="small" placeholder="一级标签" class="filter-item" style="width: 120px">
             <el-option v-for="item in firstLabels" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
@@ -44,9 +45,9 @@
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" highlight-current-row style="width: 100%" @selection-change="crud.selectionChangeHandler" @current-change="handleCurrentChange">
       <el-table-column type="selection" width="55" />
       <el-table-column label="标签ID" prop="labelId" />
-      <el-table-column label="标签名称" prop="labelName" />
+      <el-table-column label="标签名称" prop="labelName" width="200" />
       <el-table-column label="标签等级" prop="labelLevelName" />
-      <el-table-column label="一级标签" prop="firstLabelName" />
+      <el-table-column label="一级标签" prop="firstLabelName" width="200" />
       <el-table-column label="标签描述" prop="description" />
       <el-table-column label="状态" align="center" prop="labelStatus">
         <template slot-scope="scope">
@@ -85,7 +86,7 @@ import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination.vue'
 import crudLabel, { list } from '@/api/label'
 
-const defaultForm = { labelId: null, labelName: null, labelLevelName: null, firstLabelName: null }
+const defaultForm = { labelId: null, labelName: null, labelLevelName: null, firstLabelName: null, firstLabelId: null }
 export default {
   name: 'Tag',
   components: { pagination, crudOperation, rrOperation, udOperation },
@@ -110,20 +111,14 @@ export default {
         del: ['admin', 'tag:del'],
         status: ['admin', 'tag:status']
       },
-      labelLevel: [
-        { key: '', display_name: '全部' },
-        { key: '1', display_name: '一级' },
-        { key: '2', display_name: '二级' }
-      ],
-      labelLevel4Edit: [
-        { key: '1', display_name: '一级' },
-        { key: '2', display_name: '二级' }
+      labelLevelList: [
+        { key: 1, display_name: '一级' },
+        { key: 2, display_name: '二级' }
       ],
       firstLabels: [],
       labelStatus: [
-        { key: '', display_name: '全部' },
-        { key: '1', display_name: '上线' },
-        { key: '2', display_name: '下线' }
+        { key: 1, display_name: '上线' },
+        { key: 2, display_name: '下线' }
       ]
     }
   },
