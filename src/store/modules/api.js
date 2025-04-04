@@ -8,6 +8,8 @@ const api = {
     databaseUploadApi: baseUrl + '/api/database/upload',
     // 图片上传
     imagesUploadApi: baseUrl + '/api/localStorage/pictures',
+    // 商品图片上传
+    productImagesUploadApi: baseUrl + '/api/localStorage/product/pictures',
     // 修改头像
     updateAvatarApi: baseUrl + '/api/users/updateAvatar',
     // 上传文件到七牛云

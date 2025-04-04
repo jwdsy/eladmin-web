@@ -94,7 +94,7 @@ export default {
   },
   mixins: [presenter()],
   // 数据字典
-  dicts: ['job_status'],
+  dicts: ['item_status'],
   data() {
     return {
       permission: {

@@ -13,6 +13,7 @@ const getters = {
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
   imagesUploadApi: state => state.api.imagesUploadApi,
+  productImagesUploadApi: state => state.api.productImagesUploadApi,
   baseApi: state => state.api.baseApi,
   fileUploadApi: state => state.api.fileUploadApi,
   updateAvatarApi: state => state.api.updateAvatarApi,
