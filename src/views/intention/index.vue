@@ -83,7 +83,7 @@ export default {
     },
     downloadMethod(row) {
       download('/api/biz/customer/submit/record/download', { id: row.id }).then(result => {
-        downloadFile(result, row.id + '_' + row.username + '_' + row.nickName + '_' + row.phone + '_' + row.email + '_' + row.createTime, 'xlsx')
+        downloadFile(result, row.nickName + '_' + row.createTime, 'xlsx')
       })
     },
     // 改变状态

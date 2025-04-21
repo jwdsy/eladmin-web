@@ -277,7 +277,7 @@ export default {
     ])
   },
   created() {
-    this.crud.msg.add = '新增成功，默认密码：123456'
+    this.crud.msg.add = '新增成功，账号及默认密码已通过邮件发送到账后对应邮箱'
   },
   mounted: function() {
     const that = this
@@ -496,7 +496,7 @@ export default {
         })
         console.log(ids)
         crudUser.resetPwd(ids).then(() => {
-          this.crud.notify('重置成功, 用户新密码:123456', CRUD.NOTIFICATION_TYPE.SUCCESS)
+          this.crud.notify('重置成功, 用户新密码已通过邮件发送到账后对应邮箱', CRUD.NOTIFICATION_TYPE.SUCCESS)
         }).catch(() => {})
       }).catch(() => {
       })
