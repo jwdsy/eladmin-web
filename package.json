@@ -12,7 +12,9 @@
     "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "svgo": "svgo -f src/assets/icons/svg --config=src/assets/icons/svgo.yml",
-    "new": "plop"
+    "new": "plop",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build"
   },
   "husky": {
     "hooks": {
