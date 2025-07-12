@@ -43,10 +43,11 @@ export function edit(data) {
   })
 }
 
-export function getFirstLabelList() {
+export function getFirstLabelList(data) {
   return request({
     url: 'item/label/v1/getFirstLabelList',
-    method: 'post'
+    method: 'post',
+    data
   })
 }
 

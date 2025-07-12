@@ -3,6 +3,52 @@
     <!--工具栏-->
     <div class="head-container">
       <eHeader :dict="dict" :permission="permission" />
+      <div style="margin-bottom: 10px; display: flex; align-items: center;">
+        <el-input
+          v-model="searchItemNos"
+          clearable
+          size="small"
+          placeholder="请输入产品编号，英文逗号分隔"
+          style="width: 300px; margin-right: 8px;"
+          class="filter-item"
+          @keyup.enter.native="searchByItemNos"
+        />
+        <el-select
+          v-model="searchItemStatus"
+          clearable
+          size="small"
+          placeholder="产品状态"
+          class="filter-item"
+          style="width: 120px; margin-right: 8px;"
+          @change="searchByItemNos"
+        >
+          <el-option
+            v-for="item in itemStatusOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <el-button
+          class="filter-item"
+          size="small"
+          type="success"
+          icon="el-icon-search"
+          @click="searchByItemNos"
+        >
+          搜索
+        </el-button>
+        <el-button
+          class="filter-item"
+          size="small"
+          type="primary"
+          icon="el-icon-refresh"
+          style="margin-left: 8px;"
+          @click="crud.refresh()"
+        >
+          刷新
+        </el-button>
+      </div>
       <div class="crud-opts">
         <span class="crud-opts-left">
           <!-- 新增按钮 -->
@@ -31,20 +77,6 @@
             {{ exportLoading ? '导出中...' : '导出' }}
           </el-button>
         </span>
-        <el-button-group class="crud-opts-right">
-          <el-button
-            size="mini"
-            plain
-            type="info"
-            icon="el-icon-search"
-            @click="toggleSearch()"
-          />
-          <el-button
-            size="mini"
-            icon="el-icon-refresh"
-            @click="crud.refresh()"
-          />
-        </el-button-group>
       </div>
     </div>
     <!--表格渲染-->
@@ -58,10 +90,10 @@
       @selection-change="crud.selectionChangeHandler"
     >
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="itemNo" :label="this.$t('product.table.itermNo')" width="120">
+      <el-table-column prop="itemNo" label="产品编号" width="120">
         <template slot-scope="scope">
           <span
-            style="cursor: pointer; color: #409EFF;"
+            style="cursor: pointer; color: #409EFF; word-break: break-all; white-space: normal; line-height: 1.4;"
             :title="'点击复制: ' + scope.row.itemNo"
             @click="copyItemNo(scope.row.itemNo)"
           >
@@ -69,7 +101,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="itemPic" :label="this.$t('product.table.picture')" align="center" width="100">
+      <el-table-column prop="itemPic" label="产品图片" align="center" width="100">
         <template slot-scope="scope">
           <img
             :src="scope.row.itemPic ? scope.row.itemPic : ''"
@@ -78,25 +110,80 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="产品尺寸(cm)">
+      <el-table-column prop="description" label="标签描述" width="200">
         <template slot-scope="scope">
-          L:{{ scope.row.itemLength }} * W:{{ scope.row.itemWidth }} * H:{{ scope.row.itemHeight }}
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;" :title="scope.row.description">
+            {{ scope.row.description }}
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="包装箱尺寸(cm)">
+      <el-table-column prop="firstLabelName" label="一级标签" width="120">
         <template slot-scope="scope">
-          L:{{ scope.row.cartonLength }} * W:{{ scope.row.cartonWidth }} * H:{{ scope.row.cartonHeight }}
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;" :title="scope.row.firstLabelName">
+            {{ scope.row.firstLabelName || '-' }}
+          </div>
         </template>
       </el-table-column>
-      <el-table-column prop="weightPieces" label="净重(g)" />
-      <el-table-column prop="mininumOrderQuantity" label="起订量(PCS)" />
+      <el-table-column prop="secondLabelName" label="二级标签" width="120">
+        <template slot-scope="scope">
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;" :title="scope.row.secondLabelName">
+            {{ scope.row.secondLabelName || '-' }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="产品尺寸(cm)" width="120">
+        <template slot-scope="scope">
+          <div style="white-space: pre-line; line-height: 1.4;">
+            L:{{ scope.row.itemLength }}
+            W:{{ scope.row.itemWidth }}
+            H:{{ scope.row.itemHeight }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="包装箱尺寸(cm)" width="120">
+        <template slot-scope="scope">
+          <div style="white-space: pre-line; line-height: 1.4;">
+            L:{{ scope.row.cartonLength }}
+            W:{{ scope.row.cartonWidth }}
+            H:{{ scope.row.cartonHeight }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="weightPieces" label="净重(g)" width="80">
+        <template slot-scope="scope">
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;">
+            {{ scope.row.weightPieces || '-' }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="mininumOrderQuantity" label="起订量(PCS)" width="100">
+        <template slot-scope="scope">
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;">
+            {{ scope.row.mininumOrderQuantity || '-' }}
+          </div>
+        </template>
+      </el-table-column>
       <!-- <el-table-column prop="unitPrice" label="单价(人民币)" /> -->
       <!-- <el-table-column prop="factoryName" label="工厂名称" /> -->
       <!-- <el-table-column prop="itemCraft" label="商品工艺" /> -->
       <!-- <el-table-column prop="description" label="产品描述" /> -->
-      <el-table-column prop="itemStatus" label="产品状态">
+      <el-table-column prop="itemRemark" label="产品备注" width="200">
         <template slot-scope="scope">
-          {{ scope.row.itemStatus===1?"上线":"下线" }}
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;" :title="scope.row.itemRemark">
+            {{ scope.row.itemRemark || '-' }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="产品状态" align="center" prop="itemStatus" width="120">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.itemStatus"
+            active-color="#409EFF"
+            inactive-color="#F56C6C"
+            :active-value="1"
+            :inactive-value="2"
+            @change="changeItemStatus(scope.row, scope.row.itemStatus)"
+          />
         </template>
       </el-table-column>
       <!-- <el-table-column prop="delFlag" label="是否删除">
@@ -114,10 +201,20 @@
         fixed="right"
       >
         <template slot-scope="scope">
-          <udOperation
-            :data="scope.row"
-            :permission="permission"
-          />
+          <div class="operation-buttons">
+            <udOperation
+              :data="scope.row"
+              :permission="permission"
+            />
+            <el-button
+              v-if="checkPer(['admin','product:add'])"
+              size="mini"
+              type="primary"
+              icon="el-icon-copy-document"
+              title="复制"
+              @click="copyProduct(scope.row)"
+            />
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -155,6 +252,7 @@
     >
       <p style="font-weight:bold;">共导出 {{ exportItemNos.length }} 条</p>
       <p style="word-break:break-all; color:#888; font-size:13px; margin-bottom:10px;">itemNo：{{ exportItemNos.join(', ') }}</p>
+      <p style="color:#666; font-size:13px; margin-bottom:10px;">导出时间：{{ formatElapsedTime(exportElapsedTime) }}</p>
       <div style="text-align: center;">
         <el-progress
           :percentage="Number(exportProgress.toFixed(2))"
@@ -170,7 +268,7 @@
 </template>
 
 <script>
-import crudJob, { list } from '@/api/productw'
+import crudJob, { list, updateItemStatus } from '@/api/productw'
 import eHeader from './module/header'
 import eForm from './module/form'
 import CRUD, { presenter } from '@crud/crud'
@@ -185,7 +283,6 @@ export default {
       idField: 'itemId',
       url: 'api/product/v1/getItemDetailList',
       initData: list,
-      params: { pageNo: 1, pageSize: 10 },
       crudMethod: { ...crudJob }
     })
   },
@@ -206,7 +303,15 @@ export default {
       exportProgress: 0,
       exportProgressStatus: '',
       exportProgressText: '',
-      exportItemNos: []
+      exportItemNos: [],
+      exportStartTime: null,
+      exportElapsedTime: 0,
+      searchItemNos: '',
+      searchItemStatus: null,
+      itemStatusOptions: [
+        { label: '上线', value: 1 },
+        { label: '下线', value: 2 }
+      ]
     }
   },
   // 按钮显示控制
@@ -254,13 +359,13 @@ export default {
       this.imagePreviewVisible = false
       this.previewImageUrl = ''
     },
-    // 复制商品编号
+    // 复制产品编号
     copyItemNo(itemNo) {
       if (navigator.clipboard) {
         // 使用现代浏览器的 Clipboard API
         navigator.clipboard.writeText(itemNo).then(() => {
           this.$message({
-            message: '商品编号已复制到剪贴板',
+            message: '产品编号已复制到剪贴板',
             type: 'success',
             duration: 1500
           })
@@ -288,7 +393,7 @@ export default {
         const successful = document.execCommand('copy')
         if (successful) {
           this.$message({
-            message: '商品编号已复制到剪贴板',
+            message: '产品编号已复制到剪贴板',
             type: 'success',
             duration: 1500
           })
@@ -311,9 +416,29 @@ export default {
     // 导出选中项目
     exportSelectedItems() {
       const selectedItems = this.crud.selections
-      if (selectedItems.length === 0) {
+      const exportData = {}
+      let exportCount = 0
+      // 没有选中条目，且输入框不为空
+      if (selectedItems.length === 0 && this.searchItemNos.trim()) {
+        // 按英文逗号分割，去除空格和空项
+        const itemNoList = this.searchItemNos.split(',').map(s => s.trim()).filter(Boolean)
+        exportData.itemNoList = itemNoList
+        exportCount = itemNoList.length
+        // 产品状态
+        if (this.searchItemStatus !== '' && this.searchItemStatus !== null && this.searchItemStatus !== undefined) {
+          exportData.itemStatus = this.searchItemStatus
+        }
+        // 用于进度弹窗展示
+        this.exportItemNos = itemNoList
+      } else if (selectedItems.length > 0) {
+        // 有选中条目，按原逻辑导出
+        const itemIdList = selectedItems.map(item => item.itemId)
+        exportData.itemIdList = itemIdList
+        this.exportItemNos = selectedItems.map(item => item.itemNo)
+        exportCount = selectedItems.length
+      } else {
         this.$message({
-          message: '请先选择要导出的项目',
+          message: '请先选择要导出的项目，或在输入框中输入产品编号',
           type: 'warning',
           duration: 2000
         })
@@ -323,29 +448,23 @@ export default {
       // 设置导出状态
       this.exportLoading = true
 
-      // 提取选中的itemId列表
-      const itemIdList = selectedItems.map(item => item.itemId)
-      // 提取选中的itemNo列表
-      this.exportItemNos = selectedItems.map(item => item.itemNo)
-
-      // 初始化进度
+      // 初始化进度和时间
       this.exportProgress = 0
       this.exportProgressStatus = ''
-      this.exportProgressText = `准备导出 ${selectedItems.length} 条记录...`
+      this.exportProgressText = `准备导出 ${exportCount} 条记录...`
       this.exportProgressVisible = true
+      this.exportStartTime = Date.now()
+      this.exportElapsedTime = 0
 
-      // 模拟进度更新
+      // 模拟进度更新和时间更新
       const progressInterval = setInterval(() => {
         if (this.exportProgress < 90) {
           this.exportProgress += Math.random() * 10
           this.exportProgressText = `正在导出数据... ${this.exportProgress.toFixed(1)}%`
         }
+        // 更新经过的时间
+        this.exportElapsedTime = Math.floor((Date.now() - this.exportStartTime) / 1000)
       }, 500)
-
-      // 构建导出请求参数
-      const exportData = {
-        itemIdList: itemIdList
-      }
 
       // 调用导出接口
       crudJob.exportItemDetailList(exportData).then(response => {
@@ -356,6 +475,8 @@ export default {
         this.exportProgress = 100
         this.exportProgressStatus = 'success'
         this.exportProgressText = '导出完成，正在下载文件...'
+        // 最终更新时间
+        this.exportElapsedTime = Math.floor((Date.now() - this.exportStartTime) / 1000)
 
         // 延迟一下让用户看到完成状态
         setTimeout(() => {
@@ -378,7 +499,7 @@ export default {
         }, 1000)
 
         this.$message({
-          message: `成功导出 ${selectedItems.length} 条记录`,
+          message: `成功导出 ${exportCount} 条记录`,
           type: 'success',
           duration: 2000
         })
@@ -391,6 +512,8 @@ export default {
         // 显示失败状态
         this.exportProgressStatus = 'exception'
         this.exportProgressText = '导出失败，请重试'
+        // 最终更新时间
+        this.exportElapsedTime = Math.floor((Date.now() - this.exportStartTime) / 1000)
 
         // 延迟关闭进度弹窗
         setTimeout(() => {
@@ -408,6 +531,105 @@ export default {
     // 切换搜索显示
     toggleSearch() {
       this.crud.props.searchToggle = !this.crud.props.searchToggle
+    },
+    // 格式化经过的时间为 分钟:秒钟 格式
+    formatElapsedTime(seconds) {
+      const minutes = Math.floor(seconds / 60)
+      const remainingSeconds = seconds % 60
+      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+    },
+    // 按itemNo搜索
+    searchByItemNos() {
+      if (!this.searchItemNos) {
+        this.crud.query.itemNoList = undefined
+      } else {
+        // 按英文逗号分割，去除空格和空项
+        const arr = this.searchItemNos.split(',').map(s => s.trim()).filter(Boolean)
+        this.crud.query.itemNoList = arr.length > 0 ? arr : undefined
+      }
+      // 处理产品状态
+      if (this.searchItemStatus === '' || this.searchItemStatus === null || this.searchItemStatus === undefined) {
+        delete this.crud.query.itemStatus
+      } else {
+        this.crud.query.itemStatus = this.searchItemStatus
+      }
+      this.crud.toQuery()
+    },
+    // 修改产品状态
+    changeItemStatus(row, status) {
+      const statusText = status === 1 ? '上线' : '下线'
+      this.$confirm(`确定要将产品 "${row.itemNo}" 设置为${statusText}状态吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const data = {
+          itemId: row.itemId,
+          itemStatus: status
+        }
+        updateItemStatus(data).then(() => {
+          this.$message({
+            message: `产品状态已更新为${statusText}`,
+            type: 'success',
+            duration: 2000
+          })
+          // 刷新列表
+          this.crud.refresh()
+        }).catch(error => {
+          console.error('更新状态失败:', error)
+          // 恢复开关状态
+          row.itemStatus = status === 1 ? 2 : 1
+          this.$message({
+            message: '更新状态失败，请重试',
+            type: 'error',
+            duration: 2000
+          })
+        })
+      }).catch(() => {
+        // 用户取消操作，恢复开关状态
+        row.itemStatus = status === 1 ? 2 : 1
+      })
+    },
+    // 复制产品
+    copyProduct(row) {
+      // 首先调用 toAdd 方法，这会正确设置状态和触发钩子函数
+      this.crud.toAdd()
+
+      // 然后使用 $nextTick 确保表单已经初始化后再设置数据
+      this.$nextTick(() => {
+        // 复制当前行数据，但排除所有系统字段，确保创建全新产品
+        const copyData = { ...row }
+
+        // 移除所有系统字段和ID字段，确保创建全新产品
+        delete copyData.itemId
+        delete copyData.createTime
+        delete copyData.lastModifyTime
+        delete copyData.createUserId
+        delete copyData.modifyUserId
+        delete copyData.delFlag
+        delete copyData.firstLabelName // 删除显示字段，保留ID字段
+        delete copyData.secondLabelName // 删除显示字段，保留ID字段
+
+        // 保留产品编号，让用户可以看到并修改
+        // copyData.itemNo = '' // 不清空，让用户看到原产品编号
+
+        // 确保没有任何ID字段会被传递到后端
+        Object.keys(copyData).forEach(key => {
+          if (copyData[key] === null || copyData[key] === undefined) {
+            delete copyData[key]
+          }
+        })
+
+        // 使用 crud.resetForm 正确设置表单数据
+        this.crud.resetForm(copyData)
+
+        // 提示用户
+        this.$message({
+          message: '已复制产品信息，请确认产品编号后保存',
+          type: 'info',
+          duration: 3000
+        })
+      })
     }
   }
 }
@@ -416,5 +638,31 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 ::v-deep .el-input-number .el-input__inner {
   text-align: left;
+}
+</style>
+
+<style scoped>
+/* 保证搜索按钮颜色与tag/index.vue一致 */
+.el-button.filter-item.el-button--primary {
+  background-color: #409EFF;
+  border-color: #409EFF;
+  color: #fff;
+}
+
+/* 操作列按钮样式优化 */
+
+/* 确保udOperation组件内的按钮在同一行 */
+::v-deep .udOperation > div {
+  display: inline-flex !important;
+  gap: 2px !important;
+}
+
+/* 操作列按钮容器样式 */
+.operation-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
 }
 </style>

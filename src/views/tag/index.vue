@@ -14,7 +14,7 @@
         <el-input v-model="query.description" clearable size="small" placeholder="标签描述" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation />
       </div>
-      <crudOperation :permission="permission" :opt-show="optShow" />
+      <crudOperation :permission="permission" />
     </div>
     <!--表单组件-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="800px">
@@ -27,7 +27,7 @@
             <el-option v-for="item in labelLevelList" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="form.labelLevel === 2" label="一级标签" prop="firstLabelName">
+        <el-form-item v-if="form.labelLevel === 2" label="一级标签" prop="firstLabelId">
           <el-select v-model="form.firstLabelId" clearable size="small" placeholder="一级标签" class="filter-item" style="width: 120px">
             <el-option v-for="item in firstLabels" :key="item.key" :label="item.display_name" :value="item.key" />
           </el-select>
@@ -86,7 +86,7 @@ import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination.vue'
 import crudLabel, { list } from '@/api/label'
 
-const defaultForm = { labelId: null, labelName: null, labelLevelName: null, firstLabelName: null, firstLabelId: null }
+const defaultForm = { labelId: null, labelName: null, labelLevel: null, labelLevelName: null, firstLabelName: null, firstLabelId: null, description: null }
 export default {
   name: 'Tag',
   components: { pagination, crudOperation, rrOperation, udOperation },
@@ -111,6 +111,14 @@ export default {
         del: ['admin', 'tag:del'],
         status: ['admin', 'tag:status']
       },
+      rules: {
+        labelName: [
+          { required: true, message: '请输入标签名称', trigger: 'blur' }
+        ],
+        labelLevel: [
+          { required: true, message: '请选择标签等级', trigger: 'change' }
+        ]
+      },
       labelLevelList: [
         { key: 1, display_name: '一级' },
         { key: 2, display_name: '二级' }
@@ -120,6 +128,16 @@ export default {
         { key: 1, display_name: '上线' },
         { key: 2, display_name: '下线' }
       ]
+    }
+  },
+  watch: {
+    'form.labelLevel'(newVal) {
+      // 清空一级标签选择
+      if (newVal === 1) {
+        this.form.firstLabelId = null
+      }
+      // 动态更新验证规则
+      this.updateValidationRules()
     }
   },
   // 按钮显示控制
@@ -155,12 +173,24 @@ export default {
     },
     // 新增与编辑前做的操作
     [CRUD.HOOK.afterToCU](crud, form) {
-      this.getFirstLabel()
+      this.getFirstLabelList()
+      // 动态设置验证规则
+      this.updateValidationRules()
+    },
+    // 动态更新验证规则
+    updateValidationRules() {
+      if (this.form.labelLevel === 2) {
+        this.$set(this.rules, 'firstLabelId', [
+          { required: true, message: '请选择一级标签', trigger: 'change' }
+        ])
+      } else {
+        this.$delete(this.rules, 'firstLabelId')
+      }
     },
     // 获取一级标签
-    getFirstLabel() {
+    getFirstLabelList() {
       this.firstLabels = []
-      crudLabel.getFirstLabelList().then(res => {
+      crudLabel.getFirstLabelList({ labelLevel: 1 }).then(res => {
         const depts = res.labelList
         depts.forEach(data => {
           this.firstLabels.push({

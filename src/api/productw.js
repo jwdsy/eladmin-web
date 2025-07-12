@@ -39,10 +39,7 @@ export function edit(data) {
 
 export function list(url, data) {
   return new Promise(async(resolve, reject) => {
-    data.pageNo = data.page + 1
-    data.pageSize = data.size
-    delete data.page
-    delete data.size
+    data.page = data.page + 1
     delete data.sort
     try {
       const result = await request({
@@ -82,4 +79,22 @@ export function exportItemDetailList(data) {
   })
 }
 
-export default { add, edit, del, list, changeStatus, exportItemDetailList }
+// 获取标签列表
+export function getLabelList(data) {
+  return request({
+    url: 'item/label/v1/getFirstLabelList',
+    method: 'post',
+    data
+  })
+}
+
+// 更新产品状态
+export function updateItemStatus(data) {
+  return request({
+    url: 'api/product/v1/updateItemStatus',
+    method: 'post',
+    data
+  })
+}
+
+export default { add, edit, del, list, changeStatus, exportItemDetailList, getLabelList, updateItemStatus }
