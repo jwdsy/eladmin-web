@@ -11,6 +11,26 @@
         </button>
 
       </div>
+
+      <!-- 年份和季节选择器 - 靠右对齐 -->
+      <div class="filter-selectors-container">
+        <div class="filter-selectors">
+          <div class="selector-wrapper">
+            <select v-model="selectedYear" class="custom-select" @change="applyFilters">
+              <option value="" disabled selected>Select Year</option>
+              <option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</option>
+            </select>
+          </div>
+
+          <div class="selector-wrapper">
+            <select v-model="selectedSeason" class="custom-select" @change="applyFilters">
+              <option value="" disabled selected>Select Season</option>
+              <option value="1">Spring</option>
+              <option value="3">Autumn</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 网格容器 -->
@@ -134,6 +154,7 @@ export default {
   components: {
     SlickCarousel
   },
+
   data() {
     return {
       isotope: null, // 存储 Isotope 实例
@@ -146,12 +167,29 @@ export default {
       pageNo: 1,
       pageSize: 8,
       labelId: null,
+      selectedYear: '',
+      selectedSeason: '',
       theEnd: false,
       loadMore: 'Load More',
       itemRemark: ''
     }
   },
+  computed: {
+    yearOptions() {
+      const currentYear = new Date().getFullYear()
+      const years = []
+      for (let year = currentYear; year >= 2020; year--) {
+        years.push(year)
+      }
+      return years
+    }
+  },
   mounted() {
+    console.log('=== ISOTOPE GRID MOUNTED ===')
+    console.log('Props received - selectedYear:', this.selectedYear, 'type:', typeof this.selectedYear)
+    console.log('Props received - selectedSeason:', this.selectedSeason, 'type:', typeof this.selectedSeason)
+    console.log('=== END ISOTOPE GRID MOUNTED ===')
+
     this.queryLabel()
 
     this.queryProduct()
@@ -166,7 +204,39 @@ export default {
     },
 
     queryProduct() {
-      shoppingApi.queryProduct(this.pageNo, this.pageSize, this.labelId).then(res => {
+      console.log('=== DEBUG: queryProduct method ===')
+      console.log('Raw selectedYear:', this.selectedYear, 'type:', typeof this.selectedYear)
+      console.log('Raw selectedSeason:', this.selectedSeason, 'type:', typeof this.selectedSeason)
+
+      const params = {
+        pageNo: this.pageNo,
+        pageSize: this.pageSize,
+        labelId: this.labelId
+      }
+
+      // 只有当选择了年份时才添加year参数
+      if (this.selectedYear && this.selectedYear !== '' && this.selectedYear !== null && this.selectedYear !== undefined) {
+        params.year = parseInt(this.selectedYear)
+        console.log('Added year to params:', params.year)
+      } else {
+        console.log('Year NOT added. selectedYear:', this.selectedYear)
+      }
+
+      // 只有当选择了季节时才添加season参数
+      if (this.selectedSeason && this.selectedSeason !== '' && this.selectedSeason !== null && this.selectedSeason !== undefined) {
+        params.season = parseInt(this.selectedSeason)
+        console.log('Added season to params:', params.season)
+      } else {
+        console.log('Season NOT added. selectedSeason:', this.selectedSeason)
+      }
+
+      console.log('Final params object:', params)
+      console.log('=== END DEBUG ===')
+
+      console.log('queryProduct called with params:', params)
+      console.log('selectedYear:', this.selectedYear, 'selectedSeason:', this.selectedSeason)
+
+      shoppingApi.queryProduct(params).then(res => {
         this.products = res.itemList
         if (res.itemList.length < this.pageSize) {
           this.theEnd = true
@@ -180,7 +250,24 @@ export default {
         return
       }
       this.pageNo = this.pageNo + 1
-      shoppingApi.queryProduct(this.pageNo, this.pageSize, this.labelId).then(res => {
+
+      const params = {
+        pageNo: this.pageNo,
+        pageSize: this.pageSize,
+        labelId: this.labelId
+      }
+
+      // 只有当选择了年份时才添加year参数
+      if (this.selectedYear && this.selectedYear !== '' && this.selectedYear !== null && this.selectedYear !== undefined) {
+        params.year = parseInt(this.selectedYear)
+      }
+
+      // 只有当选择了季节时才添加season参数
+      if (this.selectedSeason && this.selectedSeason !== '' && this.selectedSeason !== null && this.selectedSeason !== undefined) {
+        params.season = parseInt(this.selectedSeason)
+      }
+
+      shoppingApi.queryProduct(params).then(res => {
         if (res === '') {
           this.theEnd = true
           this.loadMore = 'All Loaded'
@@ -215,6 +302,15 @@ export default {
       this.pageNo = 1
       this.products = []
       this.labelId = labelId
+      this.theEnd = false
+      this.loadMore = 'Load More'
+      this.queryProduct()
+    },
+
+    // 应用筛选条件
+    applyFilters() {
+      this.pageNo = 1
+      this.products = []
       this.theEnd = false
       this.loadMore = 'Load More'
       this.queryProduct()
@@ -282,5 +378,86 @@ export default {
 
 *::placeholder {
   color: rgb(128, 128, 128) !important;
+}
+
+/* 年份和季节选择器样式 */
+.filter-selectors-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.filter-selectors {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.selector-wrapper {
+  position: relative;
+}
+
+.custom-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  padding: 8px 32px 8px 12px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #666666;
+  min-width: 110px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+}
+
+.custom-select:hover {
+  border-color: #cccccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #999999;
+  box-shadow: 0 0 0 2px rgba(153, 153, 153, 0.1);
+}
+
+.custom-select option {
+  font-size: 13px;
+  padding: 8px 12px;
+  color: #333333;
+  background: #ffffff;
+}
+
+.custom-select option:hover {
+  background: #f5f5f5;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .filter-selectors-container {
+    justify-content: center;
+  }
+
+  .filter-selectors {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .custom-select {
+    width: 100%;
+    min-width: auto;
+  }
 }
 </style>

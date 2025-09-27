@@ -53,9 +53,7 @@
       <el-form-item label="季节">
         <el-select v-model="form.season" placeholder="请选择季节" style="width: 220px;">
           <el-option label="春" :value="1" />
-          <el-option label="夏" :value="2" />
           <el-option label="秋" :value="3" />
-          <el-option label="冬" :value="4" />
         </el-select>
       </el-form-item>
       <el-form-item label="出货港">

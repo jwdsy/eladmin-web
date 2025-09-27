@@ -97,7 +97,7 @@
     <!-- Product -->
     <div class="bg0 m-t-23 p-b-140">
       <div class="container">
-        <IsotopeGrid @handlePickProduct="handlePickProduct" />
+        <IsotopeGrid ref="isotopeGrid" @handlePickProduct="handlePickProduct" />
       </div>
     </div>
 
@@ -256,6 +256,7 @@ export default {
       pickProducts: []
     }
   },
+
   // JS逻辑
   mounted() {
     this.queryPickProduct()

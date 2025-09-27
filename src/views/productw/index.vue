@@ -29,6 +29,38 @@
             :value="item.value"
           />
         </el-select>
+        <el-select
+          v-model="searchYear"
+          clearable
+          size="small"
+          placeholder="年份"
+          class="filter-item"
+          style="width: 100px; margin-right: 8px;"
+          @change="searchByItemNos"
+        >
+          <el-option
+            v-for="year in yearOptions"
+            :key="year"
+            :label="year"
+            :value="year"
+          />
+        </el-select>
+        <el-select
+          v-model="searchSeason"
+          clearable
+          size="small"
+          placeholder="季节"
+          class="filter-item"
+          style="width: 100px; margin-right: 8px;"
+          @change="searchByItemNos"
+        >
+          <el-option
+            v-for="item in seasonOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
         <el-button
           class="filter-item"
           size="small"
@@ -308,10 +340,27 @@ export default {
       exportElapsedTime: 0,
       searchItemNos: '',
       searchItemStatus: null,
+      searchYear: null,
+      searchSeason: null,
       itemStatusOptions: [
         { label: '上线', value: 1 },
         { label: '下线', value: 2 }
+      ],
+      seasonOptions: [
+        { label: '春', value: 1 },
+        { label: '秋', value: 3 }
       ]
+    }
+  },
+  computed: {
+    // 生成年份选项，从当前年倒序到2024年
+    yearOptions() {
+      const currentYear = new Date().getFullYear()
+      const years = []
+      for (let year = currentYear; year >= 2024; year--) {
+        years.push(year)
+      }
+      return years
     }
   },
   // 按钮显示控制
@@ -427,6 +476,14 @@ export default {
         // 产品状态
         if (this.searchItemStatus !== '' && this.searchItemStatus !== null && this.searchItemStatus !== undefined) {
           exportData.itemStatus = this.searchItemStatus
+        }
+        // 年份筛选
+        if (this.searchYear !== '' && this.searchYear !== null && this.searchYear !== undefined) {
+          exportData.year = this.searchYear
+        }
+        // 季节筛选
+        if (this.searchSeason !== '' && this.searchSeason !== null && this.searchSeason !== undefined) {
+          exportData.season = this.searchSeason
         }
         // 用于进度弹窗展示
         this.exportItemNos = itemNoList
@@ -552,6 +609,18 @@ export default {
         delete this.crud.query.itemStatus
       } else {
         this.crud.query.itemStatus = this.searchItemStatus
+      }
+      // 处理年份筛选
+      if (this.searchYear === '' || this.searchYear === null || this.searchYear === undefined) {
+        delete this.crud.query.year
+      } else {
+        this.crud.query.year = this.searchYear
+      }
+      // 处理季节筛选
+      if (this.searchSeason === '' || this.searchSeason === null || this.searchSeason === undefined) {
+        delete this.crud.query.season
+      } else {
+        this.crud.query.season = this.searchSeason
       }
       this.crud.toQuery()
     },
