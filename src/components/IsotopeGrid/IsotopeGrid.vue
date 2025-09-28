@@ -17,14 +17,14 @@
         <div class="filter-selectors">
           <div class="selector-wrapper">
             <select v-model="selectedYear" class="custom-select" @change="applyFilters">
-              <option value="" disabled selected>Select Year</option>
+              <option value="">All Years</option>
               <option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</option>
             </select>
           </div>
 
           <div class="selector-wrapper">
             <select v-model="selectedSeason" class="custom-select" @change="applyFilters">
-              <option value="" disabled selected>Select Season</option>
+              <option value="">All Seasons</option>
               <option value="1">Spring</option>
               <option value="3">Autumn</option>
             </select>
