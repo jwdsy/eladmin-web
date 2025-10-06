@@ -218,11 +218,10 @@ export default {
       console.log('=== DEBUG: queryProduct method ===')
       console.log('Raw selectedYear:', this.selectedYear, 'type:', typeof this.selectedYear)
       console.log('Raw selectedSeason:', this.selectedSeason, 'type:', typeof this.selectedSeason)
-
       const params = {
         pageNo: this.pageNo,
         pageSize: this.pageSize,
-        labelId: this.labelId
+        firstLabelId: this.labelId
       }
 
       // 只有当选择了年份时才添加year参数
