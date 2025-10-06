@@ -136,7 +136,7 @@
       </div>
     </div>
     <!-- Load more -->
-    <div class="flex-c-m flex-w w-full p-t-45">
+    <div v-if="theEnd" class="flex-c-m flex-w w-full p-t-45">
       <button href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04" @click="loadMoreProduct">
         {{ loadMore }}
       </button>
@@ -175,7 +175,8 @@ export default {
       selectedSeason: '',
       theEnd: false,
       loadMore: 'Load More',
-      itemRemark: ''
+      itemRemark: '',
+      isLoading: false
     }
   },
   computed: {
@@ -199,6 +200,12 @@ export default {
     this.queryProduct()
 
     this.initIsotope()
+
+    // 监听滚动以实现无限加载
+    window.addEventListener('scroll', this.handleScroll, { passive: true })
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
     queryLabel() {
@@ -263,6 +270,10 @@ export default {
       if (this.theEnd) {
         return
       }
+      if (this.isLoading) {
+        return
+      }
+      this.isLoading = true
       this.pageNo = this.pageNo + 1
 
       const params = {
@@ -281,7 +292,8 @@ export default {
         params.season = parseInt(this.selectedSeason)
       }
 
-      shoppingApi.queryProduct(params).then(res => {
+      const fetcher = this.labelId === -1 ? shoppingApi.queryCollectionProduct : shoppingApi.queryProduct
+      fetcher(params).then(res => {
         if (res === '') {
           this.theEnd = true
           this.loadMore = 'All Loaded'
@@ -294,6 +306,8 @@ export default {
           this.products = [...this.products, ...res.itemList]
           this.isotope.layout()
         }
+      }).finally(() => {
+        this.isLoading = false
       })
     },
 
@@ -329,6 +343,27 @@ export default {
       this.theEnd = false
       this.loadMore = 'Load More'
       this.queryProduct()
+    },
+
+    // 滚动事件处理：接近底部时自动加载
+    handleScroll() {
+      if (this.theEnd || this.isLoading) {
+        return
+      }
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+      const docHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.clientHeight
+      )
+      const threshold = 150 // px 距离底部阈值
+      if (scrollTop + viewportHeight >= docHeight - threshold) {
+        this.loadMoreProduct()
+      }
     },
 
     // 应用筛选条件
