@@ -79,6 +79,18 @@ export function queryPicProduct() {
     params
   })
 }
+export function queryCollectionProduct() {
+  const params = {
+    pageNo: 1,
+    pageSize: 100,
+    pickFlag: 1
+  }
+  return request({
+    url: '/api/item/v1/getItemShowList',
+    method: 'post',
+    data: params
+  })
+}
 
 export function itemPick(itemId, itemRemark, pickFlag) {
   const params = {
@@ -138,4 +150,4 @@ export function edit(data) {
   })
 }
 
-export default { queryProduct, queryLabel, queryPicProduct, itemPick, submitCart, cleanCart, add, edit, del }
+export default { queryCollectionProduct, queryProduct, queryLabel, queryPicProduct, itemPick, submitCart, cleanCart, add, edit, del }

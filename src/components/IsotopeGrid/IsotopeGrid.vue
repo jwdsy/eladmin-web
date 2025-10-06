@@ -2,7 +2,11 @@
   <div>
     <div class="flex-w flex-sb-m p-b-52" style="flex-direction: column;">
       <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-        <button :class="`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${labelId === null ? 'how-active1':''}`" @click="filterItems()">
+        <button :class="`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${labelId === -1 ? 'how-active1':''}`" @click="filterCollectionItems()">
+          COLLECTION
+        </button>
+
+        <button :class="`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${labelId === null ? 'how-active1':''}`" @click="filterItems(null)">
           All Products
         </button>
 
@@ -39,7 +43,7 @@
         <div class="block2">
           <div class="block2-pic hov-img0">
             <img :src="`${product.itemPic}`">
-            <button href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1" @click="quickView(product)">
+            <button v-if="labelId != -1" href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1" @click="quickView(product)">
               Quick View
             </button>
           </div>
@@ -50,12 +54,12 @@
                 {{ product.itemNo }}
               </a>
 
-              <span class="stext-105 cl3">
+              <span v-if="labelId != -1" class="stext-105 cl3">
                 L:{{ product.itemLength }} * W:{{ product.itemWidth }} * H:{{ product.itemHeight }}
               </span>
             </div>
 
-            <div class="block2-txt-child2 flex-r p-t-3">
+            <div v-if="labelId != -1" class="block2-txt-child2 flex-r p-t-3">
               <button href="#" class="dis-block pos-relative">
                 <img class="icon-heart1 dis-block trans-04" :src="`${product.pickFlag?heart02:heart01}`" alt="ICON">
               </button>
@@ -166,7 +170,7 @@ export default {
       viewProduct: {},
       pageNo: 1,
       pageSize: 8,
-      labelId: null,
+      labelId: -1,
       selectedYear: '',
       selectedSeason: '',
       theEnd: false,
@@ -236,13 +240,23 @@ export default {
       console.log('queryProduct called with params:', params)
       console.log('selectedYear:', this.selectedYear, 'selectedSeason:', this.selectedSeason)
 
-      shoppingApi.queryProduct(params).then(res => {
-        this.products = res.itemList
-        if (res.itemList.length < this.pageSize) {
-          this.theEnd = true
-          this.loadMore = 'All Loaded'
-        }
-      })
+      if (this.labelId === -1) {
+        shoppingApi.queryCollectionProduct(params).then(res => {
+          this.products = res.itemList
+          if (res.itemList.length < this.pageSize) {
+            this.theEnd = true
+            this.loadMore = 'All Loaded'
+          }
+        })
+      } else {
+        shoppingApi.queryProduct(params).then(res => {
+          this.products = res.itemList
+          if (res.itemList.length < this.pageSize) {
+            this.theEnd = true
+            this.loadMore = 'All Loaded'
+          }
+        })
+      }
     },
 
     loadMoreProduct() {
@@ -296,6 +310,16 @@ export default {
       })
     },
 
+    // 过滤组合项目
+    filterCollectionItems(labelId) {
+      // this.isotope.arrange({ filter: selector })
+      this.pageNo = 1
+      this.products = []
+      this.labelId = -1
+      this.theEnd = false
+      this.loadMore = 'Load More'
+      this.queryProduct()
+    },
     // 过滤项目
     filterItems(labelId) {
       // this.isotope.arrange({ filter: selector })
