@@ -169,7 +169,7 @@ export default {
       products: [],
       viewProduct: {},
       pageNo: 1,
-      pageSize: 8,
+      pageSize: 40,
       labelId: -1,
       selectedYear: '',
       selectedSeason: '',
