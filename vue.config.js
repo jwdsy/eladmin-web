@@ -9,7 +9,8 @@ function resolve(dir) {
 }
 
 const name = defaultSettings.title // 网址标题
-const port = 8013 // 端口配置
+// 动态端口配置：优先使用环境变量，其次使用默认值，最后让系统自动分配
+const port = process.env.PORT || process.env.npm_config_port || 8013
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -22,11 +23,18 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
+    host: '0.0.0.0', // 允许外部访问
     open: true,
+    hot: true, // 启用热重载
     overlay: {
       warnings: false,
       errors: true
     },
+    // 对于Vue CLI 3.x，使用public配置
+    public: `localhost:${port}`,
+    disableHostCheck: true, // 禁用主机检查
+    // 设置客户端日志级别为warning以减少错误
+    clientLogLevel: 'warning',
     proxy: {
       '/api': {
         target: process.env.VUE_APP_BASE_API,
@@ -81,6 +89,14 @@ module.exports = {
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
+
+    // 强制设置devServer的端口
+    if (process.env.NODE_ENV === 'development') {
+      config.devServer
+        .port(port)
+        .host('0.0.0.0')
+        .public(`localhost:${port}`)
+    }
 
     // set svg-sprite-loader
     config.module

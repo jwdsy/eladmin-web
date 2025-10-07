@@ -165,7 +165,7 @@ export default {
       products: [],
       viewProduct: {},
       pageNo: 1,
-      pageSize: 8,
+      pageSize: 48,
       labelId: null,
       selectedYear: '',
       selectedSeason: '',
