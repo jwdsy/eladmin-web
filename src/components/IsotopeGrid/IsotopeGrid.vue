@@ -171,8 +171,8 @@ export default {
       pageNo: 1,
       pageSize: 40,
       labelId: -1,
-      selectedYear: '',
-      selectedSeason: '',
+      selectedYear: new Date().getFullYear(),
+      selectedSeason: new Date().getMonth() + 1 < 7 ? 1 : 3,
       theEnd: false,
       loadMore: 'Load More',
       itemRemark: '',
@@ -215,9 +215,6 @@ export default {
     },
 
     queryProduct() {
-      console.log('=== DEBUG: queryProduct method ===')
-      console.log('Raw selectedYear:', this.selectedYear, 'type:', typeof this.selectedYear)
-      console.log('Raw selectedSeason:', this.selectedSeason, 'type:', typeof this.selectedSeason)
       const params = {
         pageNo: this.pageNo,
         pageSize: this.pageSize,
@@ -227,40 +224,28 @@ export default {
       // 只有当选择了年份时才添加year参数
       if (this.selectedYear && this.selectedYear !== '' && this.selectedYear !== null && this.selectedYear !== undefined) {
         params.year = parseInt(this.selectedYear)
-        console.log('Added year to params:', params.year)
-      } else {
-        console.log('Year NOT added. selectedYear:', this.selectedYear)
       }
 
       // 只有当选择了季节时才添加season参数
       if (this.selectedSeason && this.selectedSeason !== '' && this.selectedSeason !== null && this.selectedSeason !== undefined) {
         params.season = parseInt(this.selectedSeason)
-        console.log('Added season to params:', params.season)
-      } else {
-        console.log('Season NOT added. selectedSeason:', this.selectedSeason)
       }
-
-      console.log('Final params object:', params)
-      console.log('=== END DEBUG ===')
-
-      console.log('queryProduct called with params:', params)
-      console.log('selectedYear:', this.selectedYear, 'selectedSeason:', this.selectedSeason)
 
       if (this.labelId === -1) {
         shoppingApi.queryCollectionProduct(params).then(res => {
-          this.products = res.itemList
-          if (res.itemList.length < this.pageSize) {
+          if (res == null || res.itemList == null || res.itemList.length < this.pageSize) {
             this.theEnd = true
             this.loadMore = 'All Loaded'
           }
+          this.products = res.itemList
         })
       } else {
         shoppingApi.queryProduct(params).then(res => {
-          this.products = res.itemList
-          if (res.itemList.length < this.pageSize) {
+          if (res == null || res.itemList == null || res.itemList.length < this.pageSize) {
             this.theEnd = true
             this.loadMore = 'All Loaded'
           }
+          this.products = res.itemList
         })
       }
     },
