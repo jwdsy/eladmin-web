@@ -60,8 +60,24 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/shopping',
+    redirect: '/shopping/collection'
+  },
+  {
     path: '/shopping/index',
     component: Shopping
+  },
+  {
+    path: '/shopping/collection',
+    component: (resolve) => require(['@/views/shoppingV2/collection'], resolve),
+    name: 'ShoppingCollection',
+    meta: { title: '集合页', noCache: true }
+  },
+  {
+    path: '/shopping/products',
+    component: (resolve) => require(['@/views/shoppingV2/index'], resolve),
+    name: 'ShoppingProducts',
+    meta: { title: '商品页', noCache: true }
   }
 ]
 

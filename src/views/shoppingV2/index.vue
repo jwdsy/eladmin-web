@@ -2,13 +2,31 @@
   <div class="shopping-container">
     <!-- 头部筛选区域 -->
     <div class="header-section">
+      <!-- 右上角导航链接 -->
+      <div class="top-navigation">
+        <router-link
+          to="/shopping/collection"
+          class="nav-link"
+          :class="{ active: $route.path === '/shopping/collection' }"
+        >
+          Collections
+        </router-link>
+        <router-link
+          to="/shopping/products"
+          class="nav-link"
+          :class="{ active: $route.path === '/shopping/products' }"
+        >
+          Products
+        </router-link>
+      </div>
+
       <!-- 左侧筛选栏 -->
       <div class="filter-sidebar">
         <div class="filter-section">
           <div class="filter-title">Product Category</div>
           <div class="filter-options">
             <div
-              class="filter-option"
+              class="filter-option filter-option-all"
               :class="{ active: filters.firstLabelId === null }"
               @click="applyFilter('firstLabelId', null)"
             >
@@ -49,7 +67,7 @@
           <div class="filter-title">Year</div>
           <div class="filter-options">
             <div
-              class="filter-option"
+              class="filter-option filter-option-all"
               :class="{ active: filters.year === null }"
               @click="applyFilter('year', null)"
             >
@@ -78,7 +96,7 @@
           <div class="filter-title">Season</div>
           <div class="filter-options">
             <div
-              class="filter-option"
+              class="filter-option filter-option-all"
               :class="{ active: filters.season === null }"
               @click="applyFilter('season', null)"
             >
@@ -111,7 +129,7 @@
       <!-- 右侧推荐轮播 -->
       <div class="banner-section">
         <div class="banner-container">
-          <div class="banner-wrapper" :style="{ transform: `translateX(-${currentBannerIndex * 1200}px)` }">
+          <div class="banner-wrapper" :style="{ transform: `translateX(-${currentBannerIndex * 20}%)` }">
             <div
               v-for="(page, pageIndex) in bannerPages"
               :key="pageIndex"
@@ -313,8 +331,8 @@ export default {
       // 筛选条件
       filters: {
         firstLabelId: null,
-        year: null,
-        season: null,
+        year: 2025,
+        season: 3,
         brand: '',
         lengthSort: null, // null, 'asc', 'desc'
         heightSort: null // null, 'asc', 'desc'
@@ -359,6 +377,12 @@ export default {
   },
   mounted() {
     console.log('组件mounted开始')
+
+    // 检查是否是首次进入，如果是则重定向到集合页
+    if (this.$route.path === '/shoppingV2/index') {
+      this.$router.replace('/shopping/collection')
+      return
+    }
 
     // 隐藏系统布局元素
     this.hideSystemLayout()
@@ -765,6 +789,12 @@ export default {
     // 滚动加载
     handleScroll() {
       console.log('滚动事件触发!')
+
+      // 检查scrollContainer是否存在
+      if (!this.scrollContainer) {
+        console.warn('scrollContainer为null，跳过滚动处理')
+        return
+      }
 
       let scrollTop, scrollHeight, clientHeight
 
@@ -1247,16 +1277,54 @@ export default {
 /* 头部筛选区域 */
 .header-section {
   display: flex;
-  gap: 20px;
-  margin: 0 auto 20px auto;
-  padding: 20px 20px 20px 20px;
+  gap: 12px;
+  margin: 0 auto 8px auto;
+  padding: 12px 20px 12px 20px;
   align-items: center; /* 让子元素中心对齐 */
   max-width: calc(6 * 220px + 5 * 20px); /* 与商品网格保持一致 */
+  position: relative;
+}
+
+/* 右上角导航链接 */
+.top-navigation {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1200px; /* 与商品区域宽度一致 */
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  padding: 10px 0;
+  z-index: 1000;
+}
+
+.nav-link {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.nav-link:hover {
+  color: #ff6900;
+  background-color: #fff;
+  border-color: #ff6900;
+}
+
+.nav-link.active {
+  color: #ff6900;
+  background-color: #fff;
+  border-color: #ff6900;
+  font-weight: 600;
 }
 
 /* 左侧筛选栏 */
 .filter-sidebar {
-  width: 200px;
+  width: 280px;
   background: white;
   border-radius: 8px;
   padding: 12px;
@@ -1307,6 +1375,10 @@ export default {
   color: white;
 }
 
+.filter-option-all {
+  font-weight: bold;
+}
+
 .clear-filters-btn {
   width: 100%;
   padding: 6px;
@@ -1325,9 +1397,12 @@ export default {
 
 /* 右侧推荐轮播 */
 .banner-section {
-  width: 1200px; /* 增加宽度以容纳3张横向排列的图片 */
-  height: 400px; /* 调整高度适应横向布局 */
-  flex-shrink: 0;
+  width: 100%; /* 默认正常宽度 */
+  max-width: calc(6 * 220px + 5 * 20px); /* 与商品网格保持一致 */
+  height: 200px; /* 减少高度以避免覆盖筛选项 */
+  margin: 0 auto; /* 默认居中 */
+  padding: 0 2px; /* 减少左右padding，更好利用空间 */
+  box-sizing: border-box;
 }
 
 .banner-container {
@@ -1341,7 +1416,7 @@ export default {
 
 .banner-wrapper {
   display: flex;
-  width: 6000px; /* 5页 × 1200px */
+  width: 500%; /* 5页 × 100% */
   height: 100%;
   transition: transform 0.5s ease;
   position: relative;
@@ -1350,28 +1425,95 @@ export default {
 }
 
 .banner-page {
-  width: 1200px; /* 匹配banner-section的宽度 */
+  width: 20%; /* 每页占20%宽度 (100% / 5页) */
   height: 100%;
   display: flex;
   flex-direction: row; /* 改为横向排列 */
-  gap: 5px;
-  padding: 5px;
+  align-items: stretch; /* 拉伸填满高度，消除上下留白 */
+  justify-content: space-evenly; /* 均匀分布 */
+  gap: 4px; /* 适中间距，更好利用空间 */
+  padding: 0 4px; /* 只保留左右内边距，移除上下内边距 */
   box-sizing: border-box;
   flex-shrink: 0;
 }
 
+/* 大屏幕时调整间距 */
+@media (min-width: 1200px) {
+  .banner-page {
+    gap: 2px; /* 3张图片时使用更紧凑间距 */
+    padding: 0 2px; /* 只保留左右内边距，移除上下内边距 */
+  }
+}
+
 .banner-item {
-  width: calc((100% - 10px) / 3); /* 每页3张图片，横向排列 */
-  height: 100%;
+  width: calc((100% - 8px) / 2); /* 默认每页2张图片，适应新的间距 */
+  height: 100%; /* 填满整个高度，消除上下留白 */
   position: relative;
   flex-shrink: 0;
   border-radius: 4px;
   overflow: hidden;
 }
 
+/* 平板设备：显示2张图片 */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .banner-item {
+    width: calc((100% - 8px) / 2); /* 平板每页2张图片，与默认样式保持一致 */
+  }
+  .banner-page {
+    gap: 4px;
+    padding: 0 4px; /* 只保留左右内边距，移除上下内边距 */
+  }
+}
+
+/* 大屏幕时显示3张图片 */
+@media (min-width: 1200px) {
+  .banner-item {
+    width: calc((100% - 4px) / 3); /* 大屏幕每页3张图片 */
+  }
+}
+
+/* 超大屏幕时启用扩展布局 */
+@media (min-width: 1400px) {
+  .banner-section {
+    width: auto !important;
+    max-width: calc(3 * 364px + 2 * 16px) !important;
+    height: 364px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .banner-item {
+    width: 364px !important;
+    height: 364px !important;
+  }
+
+  .banner-page {
+    gap: 16px !important;
+    padding: 0 !important;
+  }
+
+  .banner-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+}
+
+/* 中等屏幕时恢复正常布局 */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .banner-section {
+    width: 100%;
+    max-width: calc(6 * 220px + 5 * 20px);
+    height: 220px; /* 中等屏幕：适中高度避免覆盖 */
+    margin: 0 auto;
+  }
+}
+
 .banner-item img {
   width: 100%;
   height: 100%;
+  max-height: 100%;
   object-fit: cover;
 }
 
@@ -1402,9 +1544,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   background: white;
-  padding: 16px 20px;
+  padding: 12px 20px;
   border-radius: 8px;
-  margin: 0 auto 20px auto;
+  margin: 0 auto 16px auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   max-width: calc(6 * 220px + 5 * 20px); /* 与商品网格保持一致 */
 }
@@ -1412,22 +1554,24 @@ export default {
 .sort-options {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .sort-label {
   color: #666;
   font-weight: 500;
+  font-size: 12px;
 }
 
 .sort-btn {
-  padding: 8px 16px;
+  padding: 4px 8px;
   border: 1px solid #ddd;
   background: white;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
   color: #666;
+  font-size: 12px;
 }
 
 .sort-btn:hover {
@@ -1443,7 +1587,7 @@ export default {
 
 .result-count {
   color: #666;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 /* 商品网格 */
@@ -1721,8 +1865,8 @@ export default {
 @media (max-width: 768px) {
   .header-section {
     flex-direction: column;
-    padding: 10px 0;
-    margin: 0 12% 20px 12%;
+    padding: 8px 0;
+    margin: 0 12% 8px 12%;
   }
 
   .filter-sidebar {
@@ -1730,8 +1874,22 @@ export default {
   }
 
   .banner-section {
-    width: 100%; /* 移动端占满宽度 */
-    height: 150px; /* 移动端适当降低高度 */
+    width: 100%; /* 移动端恢复正常宽度 */
+    max-width: none; /* 移除最大宽度限制 */
+    height: 150px; /* 移动端：减少高度避免覆盖筛选项 */
+    margin: 0 12% 8px 12%; /* 恢复正常边距 */
+    padding: 0 4px; /* 减少移动端padding，更好利用空间 */
+  }
+
+  /* 移动端轮播每页只显示1张图片 */
+  .banner-item {
+    width: calc(100% - 4px); /* 移动端每页1张图片，最大化显示 */
+  }
+
+  .banner-page {
+    gap: 4px;
+    padding: 0 4px; /* 只保留左右内边距，移除上下内边距 */
+    justify-content: center; /* 居中显示单张图片 */
   }
 
   .products-grid {
@@ -1744,7 +1902,7 @@ export default {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
-    margin: 0 12% 20px 12%;
+    margin: 0 12% 16px 12%;
   }
 }
 
@@ -1752,7 +1910,8 @@ export default {
 @media (max-width: 768px) {
   .products-grid,
   .sort-bar,
-  .header-section {
+  .header-section,
+  .banner-section {
     max-width: none; /* 移动端取消最大宽度限制 */
     padding: 0 15px; /* 减少左右内边距 */
   }
@@ -1764,6 +1923,12 @@ export default {
     max-width: none;
     margin: 0 12% 20px 12%;
     padding: 20px 0;
+  }
+
+  .banner-section {
+    max-width: none;
+    margin: 0 12% 20px 12%;
+    padding: 0;
   }
 
   .sort-bar {
@@ -1781,7 +1946,7 @@ export default {
 /* 回顶部按钮样式 */
 .back-to-top {
   position: fixed;
-  right: 0px;
+  right: 20px;
   bottom: 80px;
   width: 60px;
   height: 80px;
@@ -1827,6 +1992,7 @@ export default {
   font-size: 12px;
   color: #666;
   font-weight: 500;
+  text-align: center;
   transition: color 0.3s ease;
 }
 
