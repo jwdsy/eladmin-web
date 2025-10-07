@@ -2,7 +2,11 @@
   <div>
     <div class="flex-w flex-sb-m p-b-52" style="flex-direction: column;">
       <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-        <button :class="`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${labelId === null ? 'how-active1':''}`" @click="filterItems()">
+        <button :class="`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${labelId === -1 ? 'how-active1':''}`" @click="filterCollectionItems()">
+          COLLECTION
+        </button>
+
+        <button :class="`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${labelId === null ? 'how-active1':''}`" @click="filterItems(null)">
           All Products
         </button>
 
@@ -39,7 +43,7 @@
         <div class="block2">
           <div class="block2-pic hov-img0">
             <img :src="`${product.itemPic}`">
-            <button href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1" @click="quickView(product)">
+            <button v-if="labelId != -1" href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1" @click="quickView(product)">
               Quick View
             </button>
           </div>
@@ -50,12 +54,12 @@
                 {{ product.itemNo }}
               </a>
 
-              <span class="stext-105 cl3">
+              <span v-if="labelId != -1" class="stext-105 cl3">
                 L:{{ product.itemLength }} * W:{{ product.itemWidth }} * H:{{ product.itemHeight }}
               </span>
             </div>
 
-            <div class="block2-txt-child2 flex-r p-t-3">
+            <div v-if="labelId != -1" class="block2-txt-child2 flex-r p-t-3">
               <button href="#" class="dis-block pos-relative">
                 <img class="icon-heart1 dis-block trans-04" :src="`${product.pickFlag?heart02:heart01}`" alt="ICON">
               </button>
@@ -132,7 +136,7 @@
       </div>
     </div>
     <!-- Load more -->
-    <div class="flex-c-m flex-w w-full p-t-45">
+    <div v-if="theEnd" class="flex-c-m flex-w w-full p-t-45">
       <button href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04" @click="loadMoreProduct">
         {{ loadMore }}
       </button>
@@ -165,13 +169,14 @@ export default {
       products: [],
       viewProduct: {},
       pageNo: 1,
-      pageSize: 48,
-      labelId: null,
+      pageSize: 40,
+      labelId: -1,
       selectedYear: '',
       selectedSeason: '',
       theEnd: false,
       loadMore: 'Load More',
-      itemRemark: ''
+      itemRemark: '',
+      isLoading: false
     }
   },
   computed: {
@@ -195,6 +200,12 @@ export default {
     this.queryProduct()
 
     this.initIsotope()
+
+    // 监听滚动以实现无限加载
+    window.addEventListener('scroll', this.handleScroll, { passive: true })
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
     queryLabel() {
@@ -207,11 +218,10 @@ export default {
       console.log('=== DEBUG: queryProduct method ===')
       console.log('Raw selectedYear:', this.selectedYear, 'type:', typeof this.selectedYear)
       console.log('Raw selectedSeason:', this.selectedSeason, 'type:', typeof this.selectedSeason)
-
       const params = {
         pageNo: this.pageNo,
         pageSize: this.pageSize,
-        labelId: this.labelId
+        firstLabelId: this.labelId
       }
 
       // 只有当选择了年份时才添加year参数
@@ -236,19 +246,33 @@ export default {
       console.log('queryProduct called with params:', params)
       console.log('selectedYear:', this.selectedYear, 'selectedSeason:', this.selectedSeason)
 
-      shoppingApi.queryProduct(params).then(res => {
-        this.products = res.itemList
-        if (res.itemList.length < this.pageSize) {
-          this.theEnd = true
-          this.loadMore = 'All Loaded'
-        }
-      })
+      if (this.labelId === -1) {
+        shoppingApi.queryCollectionProduct(params).then(res => {
+          this.products = res.itemList
+          if (res.itemList.length < this.pageSize) {
+            this.theEnd = true
+            this.loadMore = 'All Loaded'
+          }
+        })
+      } else {
+        shoppingApi.queryProduct(params).then(res => {
+          this.products = res.itemList
+          if (res.itemList.length < this.pageSize) {
+            this.theEnd = true
+            this.loadMore = 'All Loaded'
+          }
+        })
+      }
     },
 
     loadMoreProduct() {
       if (this.theEnd) {
         return
       }
+      if (this.isLoading) {
+        return
+      }
+      this.isLoading = true
       this.pageNo = this.pageNo + 1
 
       const params = {
@@ -267,7 +291,8 @@ export default {
         params.season = parseInt(this.selectedSeason)
       }
 
-      shoppingApi.queryProduct(params).then(res => {
+      const fetcher = this.labelId === -1 ? shoppingApi.queryCollectionProduct : shoppingApi.queryProduct
+      fetcher(params).then(res => {
         if (res === '') {
           this.theEnd = true
           this.loadMore = 'All Loaded'
@@ -280,6 +305,8 @@ export default {
           this.products = [...this.products, ...res.itemList]
           this.isotope.layout()
         }
+      }).finally(() => {
+        this.isLoading = false
       })
     },
 
@@ -296,6 +323,16 @@ export default {
       })
     },
 
+    // 过滤组合项目
+    filterCollectionItems(labelId) {
+      // this.isotope.arrange({ filter: selector })
+      this.pageNo = 1
+      this.products = []
+      this.labelId = -1
+      this.theEnd = false
+      this.loadMore = 'Load More'
+      this.queryProduct()
+    },
     // 过滤项目
     filterItems(labelId) {
       // this.isotope.arrange({ filter: selector })
@@ -305,6 +342,27 @@ export default {
       this.theEnd = false
       this.loadMore = 'Load More'
       this.queryProduct()
+    },
+
+    // 滚动事件处理：接近底部时自动加载
+    handleScroll() {
+      if (this.theEnd || this.isLoading) {
+        return
+      }
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+      const docHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.clientHeight
+      )
+      const threshold = 150 // px 距离底部阈值
+      if (scrollTop + viewportHeight >= docHeight - threshold) {
+        this.loadMoreProduct()
+      }
     },
 
     // 应用筛选条件
