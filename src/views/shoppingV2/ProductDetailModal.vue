@@ -7,7 +7,7 @@
         <button class="close-btn" @click="handleClose">×</button>
       </div>
       <div class="image-modal-body">
-        <img :src="product && product.image" :alt="product && product.title" class="modal-image">
+        <img :src="product && product.image" :alt="product && product.title" class="modal-image" @click="openImageModal">
         <div class="product-details">
           <p><strong>Product No:</strong> NO.{{ product && product.itemNo }}</p>
           <div v-if="(product && product.itemLength) || (product && product.itemWidth) || (product && product.itemHeight)" class="dimensions">
@@ -24,6 +24,14 @@
         </div>
       </div>
     </div>
+
+    <!-- 图片放大模态框 -->
+    <div v-if="showImageModal" class="image-zoom-modal" @click="closeImageModal">
+      <div class="image-zoom-content" @click.stop>
+        <button class="zoom-close-btn" @click="closeImageModal">&times;</button>
+        <img :src="product && product.image" :alt="product && product.title" class="zoom-image">
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,6 +46,11 @@ export default {
     product: {
       type: Object,
       default: null
+    }
+  },
+  data() {
+    return {
+      showImageModal: false
     }
   },
   watch: {
@@ -58,6 +71,14 @@ export default {
   methods: {
     handleClose() {
       this.$emit('close')
+    },
+    // 打开图片放大模态框
+    openImageModal() {
+      this.showImageModal = true
+    },
+    // 关闭图片放大模态框
+    closeImageModal() {
+      this.showImageModal = false
     }
   }
 }
@@ -137,6 +158,12 @@ export default {
   object-fit: contain;
   border-radius: 8px;
   border: 1px solid #eee;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.modal-image:hover {
+  transform: scale(1.02);
 }
 
 .product-details {
@@ -182,6 +209,88 @@ export default {
   border-left: 3px solid #007bff;
 }
 
+/* 图片放大模态框样式 */
+.image-zoom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.image-zoom-content {
+  position: relative;
+  max-width: 95%;
+  max-height: 95%;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  animation: scaleIn 0.3s ease;
+}
+
+.zoom-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.zoom-close-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.zoom-image {
+  width: auto;
+  height: auto;
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .image-modal-content {
@@ -196,6 +305,24 @@ export default {
   .modal-image {
     max-width: 100%;
     max-height: 300px;
+  }
+
+  .image-zoom-content {
+    max-width: 98%;
+    max-height: 98%;
+  }
+
+  .zoom-image {
+    max-width: 95vw;
+    max-height: 70vh;
+  }
+
+  .zoom-close-btn {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 22px;
   }
 }
 </style>

@@ -94,7 +94,7 @@
           :key="item.itemId"
           class="collection-card"
         >
-          <div class="collection-image">
+          <div class="collection-image" @click="openImageModal(item.itemPic, item.description)">
             <img
               :src="item.itemPic"
               :alt="item.description"
@@ -122,6 +122,15 @@
     <div v-if="!loading && !hasMore && items.length > 0" class="no-more-data">
       <p>All products loaded</p>
     </div>
+
+    <!-- 图片放大模态框 -->
+    <div v-if="showImageModal" class="image-modal" @click="closeImageModal">
+      <div class="image-modal-content" @click.stop>
+        <button class="close-btn" @click="closeImageModal">&times;</button>
+        <img :src="modalImageSrc" :alt="modalImageAlt" class="modal-image">
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -143,7 +152,11 @@ export default {
       currentPage: 1,
       pageSize: 20,
       scrollContainer: null,
-      userId: 1 // 默认用户ID，实际应用中应从用户状态获取
+      userId: 1, // 默认用户ID，实际应用中应从用户状态获取
+      // 图片模态框相关
+      showImageModal: false,
+      modalImageSrc: '',
+      modalImageAlt: ''
     }
   },
   mounted() {
@@ -209,13 +222,6 @@ export default {
       this.items = [] // 清空当前商品列表
       this.hasMore = true // 重置分页状态
       this.loadItems()
-    },
-
-    // 图片加载失败处理
-    handleImageError(event) {
-      console.log('图片加载失败')
-      // 设置默认图片
-      event.target.src = 'https://picsum.photos/300/200?random=' + Math.floor(Math.random() * 1000)
     },
 
     // 添加滚动监听
@@ -303,6 +309,30 @@ export default {
         this.currentPage++
         this.loadItems()
       }
+    },
+
+    // 打开图片模态框
+    openImageModal(imageSrc, imageAlt) {
+      this.modalImageSrc = imageSrc
+      this.modalImageAlt = imageAlt || '商品图片'
+      this.showImageModal = true
+      // 防止背景滚动
+      document.body.style.overflow = 'hidden'
+    },
+
+    // 关闭图片模态框
+    closeImageModal() {
+      this.showImageModal = false
+      this.modalImageSrc = ''
+      this.modalImageAlt = ''
+      // 恢复背景滚动
+      document.body.style.overflow = 'auto'
+    },
+
+    // 图片加载错误处理
+    handleImageError(event) {
+      console.warn('图片加载失败:', event.target.src)
+      event.target.src = '/static/images/placeholder.jpg' // 设置默认图片
     }
   }
 }
@@ -409,8 +439,9 @@ export default {
 .collection-image {
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 350px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .collection-image img {
@@ -614,12 +645,111 @@ export default {
   font-weight: bold;
 }
 
+/* 图片模态框样式 */
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.image-modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  animation: scaleIn 0.3s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-image {
+  width: auto;
+  height: auto;
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
   .collections-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 0 10px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+  }
+
+  .collection-card {
+    min-height: 300px;
+  }
+
+  .collection-image {
+    height: 200px;
+  }
+
+  .image-modal-content {
+    max-width: 95%;
+    max-height: 95%;
+  }
+
+  .modal-image {
+    max-width: 95vw;
+    max-height: 70vh;
   }
 
   .page-title h1 {
@@ -638,6 +768,39 @@ export default {
 
   .header-section {
     text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .collections-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .collection-card {
+    min-height: 250px;
+  }
+
+  .collection-image {
+    height: 180px;
+  }
+
+  .image-modal-content {
+    max-width: 98%;
+    max-height: 98%;
+  }
+
+  .modal-image {
+    max-width: 98vw;
+    max-height: 60vh;
+  }
+
+  .close-btn {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 22px;
   }
 }
 </style>
