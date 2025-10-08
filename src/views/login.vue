@@ -145,7 +145,11 @@ export default {
           }
           this.$store.dispatch('Login', user).then(() => {
             this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
+            if (this.$store.getters.isCUser) {
+              this.$router.push({ path: '/shopping/index' })
+            } else {
+              this.$router.push({ path: this.redirect || '/' })
+            }
           }).catch(() => {
             this.loading = false
             this.getCode()

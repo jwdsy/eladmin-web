@@ -19,6 +19,9 @@
               <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" :data-notify="`${pickProducts.length}`" @click="showCart">
                 <i class="zmdi zmdi-shopping-cart" />
               </div>
+              <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" title="logout" @click="logout">
+                <i class="zmdi zmdi-power" />
+              </div>
             </div>
           </nav>
         </div>
@@ -35,6 +38,9 @@
         <div class="wrap-icon-header flex-w flex-r-m m-r-15">
           <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" :data-notify="`${pickProducts.length}`" @click="showCart">
             <i class="zmdi zmdi-shopping-cart" />
+          </div>
+          <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10" title="logout" @click="logout">
+            <i class="zmdi zmdi-power" />
           </div>
         </div>
 
@@ -241,6 +247,7 @@ import PerfectScrollbar from 'perfect-scrollbar'
 import shoppingApi from '@/api/shopping'
 import IsotopeGrid from '@/components/IsotopeGrid/IsotopeGrid.vue'
 import Swal from 'sweetalert2'
+import store from '@/store'
 
 export default {
   components: {
@@ -335,6 +342,17 @@ export default {
           timer: 3000, // 动态设置关闭时间
           timerProgressBar: true, // 显示进度条
           showConfirmButton: false // 隐藏确认按钮
+        })
+      })
+    },
+    logout() {
+      this.$confirm('Are you sure you want to logout?', 'Logout', {
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('LogOut').then(() => {
+          this.$router.push('/login')
         })
       })
     }

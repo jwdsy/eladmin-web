@@ -208,7 +208,6 @@ export default {
   methods: {
     // 上传文件
     upload() {
-      debugger
       this.$refs.upload.submit()
     },
     beforeUpload(file) {
