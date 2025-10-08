@@ -1,5 +1,5 @@
 <template>
-  <body>
+  <body class="shopping-page">
 
     <!-- Header -->
     <header class="header-v4">
@@ -266,11 +266,34 @@ export default {
 
   // JS逻辑
   mounted() {
+    // 动态加载Bootstrap CSS，确保只在当前页面生效
+    this.loadBootstrapCSS()
     this.queryPickProduct()
-
     this.backToTop()
   },
+  beforeDestroy() {
+    // 组件销毁时移除Bootstrap CSS
+    this.removeBootstrapCSS()
+  },
   methods: {
+    // 动态加载Bootstrap CSS
+    loadBootstrapCSS() {
+      // 检查是否已经加载过Bootstrap CSS
+      if (!document.getElementById('bootstrap-css-shopping')) {
+        const link = document.createElement('link')
+        link.id = 'bootstrap-css-shopping'
+        link.rel = 'stylesheet'
+        link.type = 'text/css'
+        link.href = require('bootstrap/dist/css/bootstrap.min.css')
+        document.head.appendChild(link)
+      }
+    },
+    removeBootstrapCSS() {
+      const bootstrapCSS = document.getElementById('bootstrap-css-shopping')
+      if (bootstrapCSS) {
+        bootstrapCSS.remove()
+      }
+    },
     handlePickProduct(pickProduct) {
       this.pickProducts.push(pickProduct)
     },
@@ -359,7 +382,6 @@ export default {
   }
 }
 
-require('bootstrap/dist/css/bootstrap.min.css')
 require('font-awesome/css/font-awesome.min.css')
 require('material-design-iconic-font/dist/css/material-design-iconic-font.min.css')
 require('linearicons/dist/web-font/style.css')
