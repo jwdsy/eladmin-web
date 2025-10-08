@@ -77,6 +77,9 @@
             <el-form-item label="用户名" prop="username">
               <el-input v-model="form.username" @keydown.native="keydown($event)" />
             </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="form.password" @keydown.native="keydown($event)" />
+            </el-form-item>
             <el-form-item label="电话" prop="phone">
               <el-input v-model.number="form.phone" />
             </el-form-item>
