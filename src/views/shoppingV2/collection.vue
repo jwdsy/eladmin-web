@@ -72,16 +72,16 @@
       <!-- 导航栏 -->
       <div class="top-navigation">
         <router-link
-          to="/shopping/collection"
+          to="/shoppingV2/collection"
           class="nav-link"
-          :class="{ active: $route.path === '/shopping/collection' }"
+          :class="{ active: $route.path === '/shoppingV2/collection' }"
         >
           Collections
         </router-link>
         <router-link
-          to="/shopping/products"
+          to="/shoppingV2/products"
           class="nav-link"
-          :class="{ active: $route.path === '/shopping/products' }"
+          :class="{ active: $route.path === '/shoppingV2/products' }"
         >
           Products
         </router-link>

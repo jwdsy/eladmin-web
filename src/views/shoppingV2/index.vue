@@ -5,16 +5,16 @@
       <!-- 右上角导航链接 -->
       <div class="top-navigation">
         <router-link
-          to="/shopping/collection"
+          to="/shoppingV2/collection"
           class="nav-link"
-          :class="{ active: $route.path === '/shopping/collection' }"
+          :class="{ active: $route.path === '/shoppingV2/collection' }"
         >
           Collections
         </router-link>
         <router-link
-          to="/shopping/products"
+          to="/shoppingV2/products"
           class="nav-link"
-          :class="{ active: $route.path === '/shopping/products' }"
+          :class="{ active: $route.path === '/shoppingV2/products' }"
         >
           Products
         </router-link>
@@ -380,7 +380,7 @@ export default {
 
     // 检查是否是首次进入，如果是则重定向到集合页
     if (this.$route.path === '/shoppingV2/index') {
-      this.$router.replace('/shopping/collection')
+      this.$router.replace('/shoppingV2/collection')
       return
     }
 
