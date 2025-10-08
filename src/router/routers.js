@@ -60,10 +60,6 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/shopping',
-    redirect: '/'
-  },
-  {
     path: '/shopping/index',
     component: Shopping
   },
