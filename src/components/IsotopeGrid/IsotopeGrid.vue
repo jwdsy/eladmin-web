@@ -263,7 +263,7 @@ export default {
       const params = {
         pageNo: this.pageNo,
         pageSize: this.pageSize,
-        labelId: this.labelId
+        firstLabelId: this.labelId
       }
 
       // 只有当选择了年份时才添加year参数
