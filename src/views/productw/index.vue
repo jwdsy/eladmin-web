@@ -156,10 +156,17 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="secondLabelName" label="二级标签" width="120">
+      <el-table-column prop="year" label="年份" width="100">
         <template slot-scope="scope">
-          <div style="word-break: break-all; white-space: normal; line-height: 1.4;" :title="scope.row.secondLabelName">
-            {{ scope.row.secondLabelName || '-' }}
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;" :title="String(scope.row.year)">
+            {{ scope.row.year || '-' }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="season" label="季节" width="100">
+        <template slot-scope="scope">
+          <div style="word-break: break-all; white-space: normal; line-height: 1.4;" :title="formatSeason(scope.row.season)">
+            {{ formatSeason(scope.row.season) }}
           </div>
         </template>
       </el-table-column>
@@ -594,6 +601,12 @@ export default {
       const minutes = Math.floor(seconds / 60)
       const remainingSeconds = seconds % 60
       return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+    },
+    // 格式化季节显示
+    formatSeason(val) {
+      const map = { 1: '春', 2: '夏', 3: '秋', 4: '冬' }
+      if (val === null || val === undefined || val === '') return '-'
+      return map[val] || String(val)
     },
     // 按itemNo搜索
     searchByItemNos() {
