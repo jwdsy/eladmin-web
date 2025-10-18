@@ -1,13 +1,19 @@
 import { login, getInfo, logout } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
+function isCUser(user) {
+  // 检查角色数组中是否包含"C端用户"角色
+  return user.roles.some(role => role.name === 'C端用户' || (role && role.name === 'C端用户'))
+}
+
 const user = {
   state: {
     token: getToken(),
     user: {},
     roles: [],
     // 第一次加载菜单时用到
-    loadMenus: false
+    loadMenus: false,
+    isCUser: false
   },
 
   mutations: {
@@ -16,6 +22,7 @@ const user = {
     },
     SET_USER: (state, user) => {
       state.user = user
+      state.isCUser = isCUser(user)
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
