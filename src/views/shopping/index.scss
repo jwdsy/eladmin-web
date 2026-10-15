@@ -1,0 +1,604 @@
+.shop-page {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+// 精确覆盖 Bootstrap navbar 对 container 的样式污染
+// Bootstrap 的 .navbar > .container 会添加 flex 布局，这会破坏原有布局
+.shop-page .container {
+  // 重置 Bootstrap navbar 添加的 flex 样式
+  display: block !important;
+  flex-wrap: initial !important;
+  align-items: initial !important;
+  justify-content: initial !important;
+  
+  // 保持原有的 container 样式
+  width: 100% !important;
+  padding-right: 15px !important;
+  padding-left: 15px !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  
+  // 响应式宽度
+  @media (min-width: 576px) {
+    max-width: 540px !important;
+  }
+  
+  @media (min-width: 768px) {
+    max-width: 720px !important;
+  }
+  
+  @media (min-width: 992px) {
+    max-width: 960px !important;
+  }
+  
+  @media (min-width: 1200px) {
+    max-width: 1140px !important;
+  }
+  
+  @media (min-width: 1400px) {
+    max-width: 1320px !important;
+  }
+}
+
+.product-area {
+  padding-top: 107px; // 84px header高度 + 23px原有间距
+  flex: 1;
+}
+
+// Footer 样式调整
+::v-deep footer.bg3 {
+  margin-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+// 搜索框 placeholder 样式
+.panel-search input::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.panel-search input::-webkit-input-placeholder {
+  color: #999;
+}
+
+.panel-search input::-moz-placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+.panel-search input:-ms-input-placeholder {
+  color: #999;
+}
+
+// 固定产品图片尺寸
+.block2-pic {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 133.33%; // 4:3 比例 (400px / 300px)
+  overflow: hidden;
+  background-color: #f8f8f8; // 添加背景色，当图片不填满时显示
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; // 改为 contain，完整显示图片不裁剪
+    object-position: center;
+  }
+
+  .block2-btn {
+    position: absolute;
+  }
+}
+
+.filter-link {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 1px;
+  border-bottom: 1px solid transparent !important;
+  text-decoration: none !important;
+
+  &::before,
+  &::after {
+    display: none !important;
+    content: none !important;
+  }
+}
+
+.filter-link:hover,
+.filter-link:focus,
+.filter-link:active,
+.filter-link-active {
+  color: #717fe0 !important;
+  border-bottom-color: #717fe0 !important;
+  text-decoration: none !important;
+}
+
+.js-show-filter,
+.js-show-search {
+  color: #888 !important;
+  outline: none !important;
+
+  &::before,
+  &::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  i {
+    color: #333 !important;
+  }
+
+  &:focus,
+  &:active {
+    box-shadow: none !important;
+  }
+
+  &:hover,
+  &.show-filter,
+  &.show-search {
+    background: #717fe0 !important;
+    border-color: #717fe0 !important;
+    color: #fff !important;
+  }
+
+  &:hover i,
+  &.show-filter i,
+  &.show-search i {
+    color: #fff !important;
+  }
+}
+
+::v-deep .header-v4 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .wrap-menu-desktop {
+    height: 84px;
+    top: 0;
+  }
+
+  .limiter-menu-desktop {
+    height: 100%;
+  }
+
+  .wrap-header-mobile {
+    min-height: 70px;
+  }
+}
+
+::v-deep .wrap-header-cart {
+  z-index: 1200;
+
+  .header-cart {
+    width: 390px;
+    max-width: calc(100vw - 30px);
+    height: 100vh;
+    background: #fff;
+  }
+
+  .header-cart-content {
+    height: calc(100% - 60px);
+    overflow-y: auto;
+  }
+
+  .header-cart-wrapitem {
+    padding-left: unset;
+  }
+
+  .header-cart-item {
+    align-items: flex-start;
+  }
+
+  .header-cart-item-img {
+    width: 60px;
+    position: relative;
+    margin-right: 20px;
+    cursor: pointer;
+    overflow: hidden;
+
+    &::after {
+      content: "×";
+      font-family: Arial, sans-serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    &:hover::after {
+      opacity: 1;
+    }
+
+    img {
+      width: 100%;
+      display: block;
+    }
+  }
+
+  .header-cart-item-txt {
+    width: calc(100% - 80px);
+  }
+
+  .header-cart-item-name {
+    display: block;
+    font-family: Poppins-Regular;
+    font-size: 14px;
+    line-height: 1.3;
+    color: #555;
+    text-decoration: none !important;
+
+    &:hover,
+    &:focus,
+    &:active {
+      text-decoration: none !important;
+    }
+  }
+
+  .header-cart-item-info {
+    display: block;
+    font-family: Poppins-Regular;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #888;
+  }
+
+  .header-cart-buttons {
+    gap: 0;
+
+    a {
+      width: 145px;
+      min-width: 145px;
+      height: 40px;
+      box-sizing: border-box;
+      border-radius: 20px;
+      padding: 0 15px;
+      line-height: 1.466667;
+      text-align: center;
+      text-decoration: none !important;
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      &:hover,
+      &:focus,
+      &:active {
+        text-decoration: none !important;
+      }
+    }
+  }
+}
+
+.shop-back-top {
+  display: flex;
+  z-index: 1000;
+  border: 0;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+::v-deep .wrap-modal1 {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  overflow-y: auto;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+
+  &.show-modal1 {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .container {
+    max-width: 1200px;
+  }
+
+  .bg0 {
+    position: relative;
+    margin: 0 auto;
+  }
+
+  .how-pos3 {
+    position: absolute;
+    top: -35px;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    z-index: 10;
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+::v-deep .overlay-modal1 {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+::v-deep .quick-gallery {
+  display: flex;
+  gap: 20px;
+  padding-left: 25px;
+  padding-right: 30px;
+}
+
+::v-deep .quick-thumbs {
+  width: 82px;
+  flex: 0 0 82px;
+
+  button {
+    display: block;
+    width: 82px;
+    height: 106px;
+    padding: 0;
+    margin-bottom: 13px;
+    border: 1px solid #e6e6e6;
+    background: #fff;
+    cursor: pointer;
+    overflow: hidden;
+
+    &.active {
+      border-color: #717fe0;
+    }
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+::v-deep .quick-main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+::v-deep .quick-image {
+  width: 100%;
+  max-height: 680px;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+::v-deep .quick-zoom-btn,
+::v-deep .quick-arrow {
+  border: 0;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #717fe0;
+    color: #fff;
+  }
+}
+
+::v-deep .quick-zoom-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+::v-deep .quick-arrow {
+  position: absolute;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+
+  i {
+    font-size: 28px;
+    line-height: 42px;
+  }
+}
+
+::v-deep .quick-arrow-left {
+  left: 18px;
+}
+
+::v-deep .quick-arrow-right {
+  right: 18px;
+}
+
+::v-deep .quick-select {
+  width: 100%;
+  height: 45px;
+  padding: 0 18px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  color: #666;
+  outline: none;
+}
+
+::v-deep .wrap-num-product button {
+  border: 0;
+  background: transparent;
+}
+
+::v-deep .num-product {
+  border: 0;
+  outline: none;
+}
+
+::v-deep .quick-detail {
+  padding-right: 50px;
+  padding-top: 5px;
+}
+
+::v-deep .quick-add-btn {
+  border: 0;
+}
+
+::v-deep .fullscreen-preview {
+  position: fixed;
+  z-index: 3000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.92);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+
+  &.show {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  }
+}
+
+::v-deep .preview-close,
+::v-deep .preview-arrow {
+  position: absolute;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+
+  &:hover {
+    background: #717fe0;
+    color: #fff;
+  }
+}
+
+::v-deep .preview-close {
+  top: 24px;
+  right: 30px;
+  width: 44px;
+  height: 44px;
+
+  i {
+    font-size: 26px;
+    line-height: 44px;
+  }
+}
+
+::v-deep .preview-arrow {
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  transform: translateY(-50%);
+
+  i {
+    font-size: 34px;
+    line-height: 52px;
+  }
+}
+
+::v-deep .preview-arrow-left {
+  left: 34px;
+}
+
+::v-deep .preview-arrow-right {
+  right: 34px;
+}
+
+// 去掉 Quick View 按钮的下划线
+.block2-btn {
+  text-decoration: none !important;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none !important;
+  }
+}
+
+// 去掉产品名称的下划线
+.block2-txt-child1 a {
+  text-decoration: none !important;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none !important;
+  }
+}
+
+// 商品名称文本溢出省略
+.product-name-ellipsis {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .product-area {
+    padding-top: 20px;
+  }
+
+  ::v-deep .wrap-modal1 {
+    padding-top: 35px !important;
+  }
+
+  ::v-deep .quick-detail {
+    padding-right: 0;
+  }
+
+  ::v-deep .quick-gallery {
+    display: block;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  ::v-deep .quick-thumbs {
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+
+    button {
+      margin-right: 10px;
+    }
+  }
+}
