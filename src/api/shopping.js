@@ -1,28 +1,40 @@
 import request from '@/utils/request'
 
-export function queryProduct(params) {
+export function queryLabelList(params) {
   return request({
-    url: '/api/item/list',
+    url: '/api/bizitem/label/list',
     method: 'get',
     params
   })
 }
 
-export function queryCollectionProduct(params) {
+/**
+ * 查询商品列表（匿名访问，用于前台展示）
+ * @param params 查询参数
+ */
+export function getItemList(params) {
   return request({
-    url: '/api/item/v1/getItemShowList',
-    method: 'post',
-    data: params
+    url: 'api/bizitem/record/list',
+    method: 'get',
+    params
   })
 }
-export function queryPicProduct() {
+
+export function queryCollectionItemList(params) {
+  return request({
+    url: '/api/bizitem/collection/list',
+    method: 'get',
+    params
+  })
+}
+export function queryCartItemList() {
   const params = {
     pageNo: 1,
     pageSize: 100,
     pickFlag: 1
   }
   return request({
-    url: '/api/item/list',
+    url: '/api/bizitem/cart/list',
     method: 'get',
     params
   })
@@ -35,7 +47,7 @@ export function itemPick(itemId, itemRemark, pickFlag) {
     pickFlag: pickFlag
   }
   return request({
-    url: '/api/item/pick',
+    url: '/api/bizitem/cart/pick',
     method: 'post',
     params
   })
@@ -43,47 +55,16 @@ export function itemPick(itemId, itemRemark, pickFlag) {
 
 export function submitCart() {
   return request({
-    url: '/api/item/submit',
+    url: '/api/bizitem/cart/submit',
     method: 'post'
   })
 }
 
 export function cleanCart() {
   return request({
-    url: '/api/item/clean',
+    url: '/api/bizitem/cart/clean',
     method: 'post'
   })
 }
 
-export function queryLabel() {
-  return request({
-    url: '/api/item/label/list',
-    method: 'get'
-  })
-}
-
-export function add(data) {
-  return request({
-    url: 'api/product',
-    method: 'post',
-    data
-  })
-}
-
-export function del(ids) {
-  return request({
-    url: 'api/product',
-    method: 'delete',
-    data: ids
-  })
-}
-
-export function edit(data) {
-  return request({
-    url: 'api/product',
-    method: 'put',
-    data
-  })
-}
-
-export default { queryCollectionProduct, queryProduct, queryLabel, queryPicProduct, itemPick, submitCart, cleanCart, add, edit, del }
+export default { queryLabelList, getItemList, queryCollectionItemList, queryCartItemList, itemPick, submitCart, cleanCart }
